@@ -1,0 +1,13 @@
+[data-controller="media"] {
+    display: flex;
+
+    align-items: center;
+
+    .btn-group {
+        margin-left: 15px;
+    }
+
+    .d-none {
+        display: none;
+    }
+}

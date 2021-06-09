@@ -1,0 +1,19 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+
+  WebEtDesign\MediaBundle\:
+    resource: '../../*'
+    exclude: '../src/{DependencyInjection,Entity}'
+
+  WebEtDesign\MediaBundle\Controller\:
+    resource: '../../Controller'
+    tags: [ 'controller.service_arguments' ]
+
+  WebEtDesign\MediaBundle\Vich\WDMediaDirectoryNamer:
+    public: true
+
+  WebEtDesign\MediaBundle\Listener\OptimizerListener:
+    tags:
+      - { name: kernel.event_listener, event: vich_uploader.post_upload }

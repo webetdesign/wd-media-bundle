@@ -1,0 +1,21 @@
+[data-controller="cropper_controller"] {
+    display : flex;
+    width   : 100%;
+
+    .img-container {
+        width  : 1350px;
+        height : 700px;
+
+        img {
+            display    : block;
+            max-width  : 1350px;
+            max-height : 700px;
+        }
+    }
+
+    .config-container {
+        margin-left : 15px;
+        width       : 300px;
+    }
+
+}

@@ -1,0 +1,18 @@
+breadcrumb:
+  link_media_list: Medias
+  link_media_create: Ajouter
+
+admin:
+  media:
+    title: Medias
+
+list.label_id: id
+list.label_label: Nom
+list.label_category_label: Categorie
+list.label_file_name: Nom du fichier
+list.label__action: Action
+
+
+filter.label_id: id
+filter.label_label: Nom
+filter.label_category: Categorie

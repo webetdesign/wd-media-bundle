@@ -1,0 +1,13 @@
+{
+  "entrypoints": {
+    "media": {
+      "js": [
+        "/bundles/wdmedia/build/runtime.32edc313.js",
+        "/bundles/wdmedia/build/media.d706dc72.js"
+      ],
+      "css": [
+        "/bundles/wdmedia/build/media.c1f76df1.css"
+      ]
+    }
+  }
+}

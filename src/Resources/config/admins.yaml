@@ -1,0 +1,10 @@
+services:
+  wd_media.admin.media:
+    class: WebEtDesign\MediaBundle\Admin\MediaAdmin
+    arguments: [ ~, WebEtDesign\MediaBundle\Entity\Media, WebEtDesign\MediaBundle\Controller\Admin\MediaAdminController]
+    tags:
+      - { name: sonata.admin, manager_type: orm, group: media, label: admin.media.title, label_translator_strategy: sonata.admin.label.strategy.underscore }
+    public: true
+    calls:
+      - [ setTranslationDomain, [ 'wd_media'] ]
+      - [ setTemplate, [ 'inner_list_row', '@@WDMedia/admin/Media/inner_row_media.html.twig'] ]

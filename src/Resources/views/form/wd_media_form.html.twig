@@ -1,0 +1,38 @@
+{% block wd_media_widget %}
+    <div data-controller="media"
+         data-id="{{ form.vars.id }}"
+         data-category="{{ form.vars.category }}"
+         data-media-id="{{ data ? data.id : null }}"
+         data-config-responsive="{{ wd_media_config.responsive | json_encode }}"
+         data-config-categories="{{ wd_media_config.categories | json_encode }}"
+    >
+        <input type="hidden" name="{{ full_name }}" value="{{ value }}">
+        <div class="image">
+            {% if data %}
+                {% if data.mimeType not in ["image/png","image/jpeg","image/pipeg","image/tiff" ] %}
+                    <img src="{{ asset('bundles/wdmedia/img/files/' ~ data.extension ~ '.png') }}" alt="{{ data.extension }}" width="90">
+                {% else %}
+                    <img src="{{ vich_uploader_asset(data) | imagine_filter('wd_media_admin_type') }}" alt="{{ data.label }}">
+                {% endif %}
+            {% else %}
+                Aucun media
+            {% endif %}
+        </div>
+        <div class="btn-group">
+            <button type="button" class="btn btn-default js-btn-add"><i class="fa fa-plus"></i>
+            </button>
+            <button type="button" class="btn btn-default js-btn-edit {% if data is null %}d-none{% endif %}">
+                <i class="fa fa-pencil"></i>
+            </button>
+            <button type="button" class="btn btn-info js-btn-list"><i class="fa fa-list"></i>
+            </button>
+            <button type="button" class="btn btn-danger js-btn-delete {% if data is null %}d-none{% endif %}"><i class="fa fa-trash"></i>
+            </button>
+        </div>
+        <div class="btn-group">
+            <button type="button" class="btn btn-default js-btn-crop"><i class="fa fa-crop"></i>
+            </button>
+        </div>
+    </div>
+
+{% endblock %}

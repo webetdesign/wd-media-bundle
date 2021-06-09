@@ -1,0 +1,39 @@
+{% if admin.list.has(constant('Sonata\\AdminBundle\\Datagrid\\ListMapper::NAME_BATCH')) and not app.request.isXmlHttpRequest %}
+    {{ object|render_list_element(admin.list[constant('Sonata\\AdminBundle\\Datagrid\\ListMapper::NAME_BATCH')]) }}
+{% endif %}
+
+<td class="sonata-ba-list-field sonata-ba-list-field-inline-fields"
+    colspan="{{ admin.list.elements|length - (admin.list.has(constant('Sonata\\AdminBundle\\Datagrid\\ListMapper::NAME_ACTIONS')) + admin.list.has(constant('Sonata\\AdminBundle\\Datagrid\\ListMapper::NAME_BATCH'))) }}"
+    objectId="{{ admin.id(object) }}">
+
+    <div class="col-sm-12">
+        <div class="pull-left">
+            {% if admin.isGranted('EDIT', object) and admin.hasRoute('edit') %}
+                <a href="{{ admin.generateUrl('edit', {'id' : object|sonata_urlsafeid }) }}" style="float: left; margin-right: 6px;">
+                    {% if object.mimeType not in ['image/gif',"image/ief","image/png","image/jpeg","image/pipeg","image/svg+xml","image/tiff" ] %}
+                        <img src="{{ asset('bundles/wdmedia/img/files/' ~ object.extension ~ '.png') }}" alt="{{ object.extension }}" width="90">
+                    {% else %}
+                        <img src="{{ vich_uploader_asset(object) | imagine_filter('wd_media_admin_list') }}" alt="{{ object.label }}">
+                    {% endif %}
+                </a>
+            {% else %}
+                {% if object.mimeType not in ['image/gif',"image/ief","image/png","image/jpeg","image/pipeg","image/svg+xml","image/tiff" ] %}
+                    <img src="{{ asset('bundles/wdmedia/img/files/' ~ object.extension ~ '.png') }}" alt="{{ object.extension }}" width="90">
+                {% else %}
+                    <img src="{{ vich_uploader_asset(object) | imagine_filter('wd_media_admin_list') }}" alt="{{ object.label }}">
+                {% endif %}
+            {% endif %}
+        </div>
+        {% if admin.isGranted('EDIT', object) and admin.hasRoute('edit') %}
+            <a href="{{ admin.generateUrl('edit', {'id' : object|sonata_urlsafeid }) }}"><strong>{{ object.label }}</strong></a>
+        {% else %}
+            <strong>{{ object.label }}</strong>
+        {% endif %}
+        Catégorie : {{ object.categoryLabel }}
+    </div>
+
+</td>
+
+{% if admin.list.has(constant('Sonata\\AdminBundle\\Datagrid\\ListMapper::NAME_ACTIONS')) and not app.request.isXmlHttpRequest %}
+        {{ object|render_list_element(admin.list[constant('Sonata\\AdminBundle\\Datagrid\\ListMapper::NAME_ACTIONS')]) }}
+{% endif %}
