@@ -14,13 +14,12 @@
   "require-dev": {
   },
   "autoload": {
-    "psr-0": {
-      "WebEtDesign\\MediaBundle": "src"
+    "psr-4": {
+      "WebEtDesign\\MediaBundle\\": "src"
     }
   },
   "extra": {
     "branch-alias": {
     }
   },
-  "target-dir": "WebEtDesign/MediaBundle"
 }
