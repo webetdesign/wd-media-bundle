@@ -41,8 +41,6 @@ class WDMediaService
         $path          = $this->uploaderHelper->asset($media);
         $runtimeConfig = $this->getRuntimeConfig($media, $format, $device);
 
-        dump($runtimeConfig);
-
         return $this->cacheManager->getBrowserPath(
             $path,
             'wd_media',
@@ -50,7 +48,7 @@ class WDMediaService
         );
     }
 
-    public function getRuntimeConfig(Media $media, $format, $device = null): ?array
+    protected function getRuntimeConfig(Media $media, $format, $device = null): ?array
     {
         $categories = $this->parameterBag->get('wd_media.categories');
         $config     = $categories[$media->getCategory()];

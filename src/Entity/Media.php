@@ -164,6 +164,7 @@ class Media
 
         if ($file) {
             $this->setUpdatedAt(new \DateTime());
+            $this->setCropData(null);
         }
 
         return $this;
