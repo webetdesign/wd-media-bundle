@@ -75,7 +75,7 @@ class Media
     /**
      * @var string|null
      *
-     * @ORM\Column(type="text")
+     * @ORM\Column(type="text", nullable=true)
      */
     private ?string $cropData = null;
 
