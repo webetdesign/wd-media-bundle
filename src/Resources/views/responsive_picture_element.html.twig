@@ -1,0 +1,9 @@
+<picture>
+    {% for device in devices %}
+        {% if not loop.last %}
+            <source srcset="{{ device.path }}" media="(min-width: {{ device.width }}px)">
+            {% else %}
+            <img src="{{ device.path }}" alt="{{ media.label }}">
+        {% endif %}
+    {% endfor %}
+</picture>
