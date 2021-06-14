@@ -7,6 +7,9 @@ namespace WebEtDesign\MediaBundle\Twig;
 use Liip\ImagineBundle\Exception\Config\Filter\NotFoundException;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Twig\Environment;
+use Twig\Error\LoaderError;
+use Twig\Error\RuntimeError;
+use Twig\Error\SyntaxError;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
 use Twig\TwigFunction;
@@ -32,7 +35,7 @@ class MediaExtension extends AbstractExtension
         $this->twig         = $twig;
     }
 
-    public function getFunctions()
+    public function getFunctions(): array
     {
         return [
             new TwigFunction('wd_media_path', [$this, 'media']),
@@ -46,7 +49,7 @@ class MediaExtension extends AbstractExtension
     /**
      * {@inheritdoc}
      */
-    public function getFilters()
+    public function getFilters(): array
     {
         return [
             new TwigFilter('wd_media_path', [$this, 'media']),
@@ -71,21 +74,24 @@ class MediaExtension extends AbstractExtension
 
     /**
      * @throws NotFoundException
-     * @throws \Twig\Error\SyntaxError
-     * @throws \Twig\Error\RuntimeError
-     * @throws \Twig\Error\LoaderError
+     * @throws SyntaxError
+     * @throws RuntimeError
+     * @throws LoaderError
      */
     public function mediaResponsive(Media $media, $format): string
     {
         $responsiveConfig = $this->parameterBag->get('wd_media.responsive');
+        $categoryConfig = $this->parameterBag->get('wd_media.categories')[$media->getCategory()];
 
         $devices = [];
 
         foreach ($responsiveConfig as $device => $config) {
-            $devices[$device] = [
-                'path'  => $this->mediaService->getImagePath($media, $format, $device),
-                'width' => $config['width'],
-            ];
+            if (isset($categoryConfig['formats'][$format][$device])) {
+                $devices[$device] = [
+                    'path'  => $this->mediaService->getImagePath($media, $format, $device),
+                    'width' => $config['width'],
+                ];
+            }
         }
 
         return $this->twig->render('@WDMedia/responsive_picture_element.html.twig', [

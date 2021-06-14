@@ -1,7 +1,7 @@
 import { Controller } from 'stimulus';
 import axios from 'axios';
 import BS3Modal from '../js/BS3Modal';
-import { CropperModalBodyTpl, CropperModalFooterTpl } from '../templatejs/cropperModalTemplate';
+import { CropperModalBodyTpl, CropperModalFooterTpl, isCroppable } from '../templatejs/cropperModalTemplate';
 
 /*
  * WDMediaType js controller
@@ -36,10 +36,14 @@ export default class extends Controller {
     this.btn.list.addEventListener('click', e => this.list(e));
     this.btn.delete.addEventListener('click', e => this.delete(e));
     this.btn.crop.addEventListener('click', e => this.crop(e));
+
+    if (this.isCropable()) {
+      this.btn.crop.classList.remove('d-none');
+    }
   }
 
   add(e) {
-    this.modal = new BS3Modal(this.id + '_modal', 'Nouveau media');
+    this.modal = new BS3Modal(this.id + '_modal', `<h3> New media in ${this.config.categories[this.category].label} category </h3>`);
 
     const queryString = new URLSearchParams();
     queryString.set('category', this.category);
@@ -58,7 +62,7 @@ export default class extends Controller {
   }
 
   edit(e) {
-    this.modal = new BS3Modal(this.id + '_modal', 'Edition ' + this.media.label);
+    this.modal = new BS3Modal(this.id + '_modal', `<h3>Edition of ${this.media.label}</h3>` );
 
     axios.get('/admin/webetdesign/media/media/' + this.mediaId + '/edit', {
       headers: { 'X-Requested-With': 'XMLHttpRequest' },
@@ -74,9 +78,11 @@ export default class extends Controller {
   }
 
   list(e) {
-    this.modal = new BS3Modal(this.id + '_modal', 'List ');
+    this.modal = new BS3Modal(this.id + '_modal', `<h3>List of media in the ${this.config.categories[this.category].label} category</h3>`);
 
-    axios.get('/admin/webetdesign/media/media/list', {
+    const filters = 'filter%5Bcategory%5D%5Btype%5D=3&filter%5Bcategory%5D%5Bvalue%5D=' + this.category;
+
+    axios.get('/admin/webetdesign/media/media/list?' + filters, {
       headers: { 'X-Requested-With': 'XMLHttpRequest' },
     })
       .then(response => {
@@ -89,7 +95,6 @@ export default class extends Controller {
                 a.addEventListener('click', async evt => {
                   evt.preventDefault();
                   const media = await this.getMedia(td.getAttribute('objectId'));
-                  console.log(media);
                   this.updateMedia(media);
                   this.modal.hide();
                   this.modal.destroy();
@@ -135,6 +140,7 @@ export default class extends Controller {
       this.input.value = null;
       this.btn.edit.classList.add('d-none');
       this.btn.delete.classList.add('d-none');
+      this.btn.crop.classList.add('d-none');
     } else {
       const img = document.createElement('img');
       img.src = media.path;
@@ -146,6 +152,11 @@ export default class extends Controller {
 
       this.btn.edit.classList.remove('d-none');
       this.btn.delete.classList.remove('d-none');
+      if (this.isCropable()) {
+        this.btn.crop.classList.remove('d-none');
+      } else {
+        this.btn.crop.classList.add('d-none');
+      }
     }
   }
 
@@ -207,11 +218,32 @@ export default class extends Controller {
     data.append('cropData', JSON.stringify(crop));
 
     try {
-      const response = await axios.post('/api/wdmedia/setcrop/' + this.media.id, data)
+      const response = await axios.post('/api/wdmedia/setcrop/' + this.media.id, data);
     } catch (error) {
       return false;
     }
 
     return true;
+  }
+
+  isCropable() {
+    let ret = false;
+
+    console.log(this.category);
+
+    if (this.media && ['image/jpeg', 'image/png'].includes(this.media.mimeType) ) {
+      Object.keys(this.config.categories[this.category].formats)
+        .forEach(format => {
+          const conf = this.config.categories[this.category].formats[format];
+
+          if (isCroppable(conf)) {
+            ret = true;
+          }
+        });
+    }
+
+    console.log(ret);
+
+    return ret;
   }
 }

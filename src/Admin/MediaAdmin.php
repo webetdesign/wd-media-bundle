@@ -19,12 +19,16 @@ use WebEtDesign\MediaBundle\Form\Type\CategoryType;
 final class MediaAdmin extends AbstractAdmin
 {
 
+
+
     protected function configureDatagridFilters(DatagridMapper $filter): void
     {
         $filter
             ->add('id')
             ->add('label')
-            ->add('category', null, [], CategoryType::class);
+            ->add('category', null, [
+                'show_filter' => !$this->getRequest()->isXmlHttpRequest()
+            ], CategoryType::class);
     }
 
     protected function configureListFields(ListMapper $list): void

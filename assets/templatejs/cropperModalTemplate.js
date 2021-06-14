@@ -82,7 +82,8 @@ export function CropperModalFooterTpl() {
   <button type="button" class="btn btn-primary js-btn-save">Save changes</button>`;
 }
 
-function isCroppable(config) {
+export function isCroppable(config) {
+  console.log(config);
   let ret = false;
 
   Object.keys(config)
@@ -98,5 +99,5 @@ function isCroppable(config) {
 }
 
 function isDeviceCroppable(config) {
-  return config.hasOwnProperty('crop') && ((config.crop.width !== null && config.crop.height !== null) || config.crop.ratio === null);
+  return config.hasOwnProperty('crop') && ((config.crop.width !== null && config.crop.height !== null));
 }

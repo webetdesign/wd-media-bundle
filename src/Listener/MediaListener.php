@@ -28,7 +28,7 @@ class MediaListener
         if (isset($categories[$entity->getCategory()]['label'])) {
             $entity->setCategoryLabel($categories[$entity->getCategory()]['label']);
         } else {
-            $entity->setCategoryLabel('Category supprimé : ' . $entity->getCategory());
+            $entity->setCategoryLabel($entity->getCategory() . ' (Deleted)');
         }
     }
 

@@ -61,6 +61,7 @@ class ApiMediaController extends AbstractController
             'label'         => $media->getLabel(),
             'category'      => $media->getCategory(),
             'categoryLabel' => $media->getCategoryLabel(),
+            'mimeType'      => $media->getMimeType(),
             'path'          => $path,
             'reference'     => $this->uploaderHelper->asset($media),
         ]);

@@ -110,7 +110,6 @@ class Configuration implements ConfigurationInterface
             ->children()
                 ->scalarNode('width')->defaultNull()->end()
                 ->scalarNode('height')->defaultNull()->end()
-                ->scalarNode('ratio')->defaultNull()->end()
             ->end()
         ;
 

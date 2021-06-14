@@ -41,8 +41,6 @@ export default class extends Controller {
 
     this.cropper.destroy();
     this.createCropper(this.cropConfigs[this.device].crop);
-
-    console.log(this.crop);
   }
 
   changeColor(btn) {
@@ -72,8 +70,6 @@ export default class extends Controller {
       // maxCropBoxHeight: 400,
       viewMode: 1,
       crop(event) {
-        console.log(vm.cropper.getImageData());
-        console.log(event.detail);
         vm.crop[vm.device] = event.detail;
         vm.input.value = JSON.stringify(vm.crop);
       },

@@ -63,6 +63,7 @@ class WDMediaService
 
         $filters = $config['formats'][$format][$device]['filters'];
 
+
         if (($crop = $media->getCropDataForFormatDevice($format, $device))) {
             $cropFilter = [
                 'start' => [$crop['x'], $crop['y']],

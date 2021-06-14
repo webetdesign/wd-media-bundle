@@ -237,7 +237,7 @@ class Media
      */
     public function getCropDataForFormatDevice($format, $device): ?array
     {
-        $crop = json_decode($this->getCropData() ? $this->getCropData() : [], true);
+        $crop = json_decode($this->getCropData() ? $this->getCropData() : '[]', true);
 
         return isset($crop[$format]) ? $crop[$format][$device] ?? null : null;
     }

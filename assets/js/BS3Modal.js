@@ -1,7 +1,6 @@
 
 const $ = require('jquery');
-require('bootstrap');
-
+require('bootstrap/js/modal.js')
 const modalTpl = `<div
             class="modal fade"
             tabindex="-1"

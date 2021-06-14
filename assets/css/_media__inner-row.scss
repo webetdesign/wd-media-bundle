@@ -1,0 +1,14 @@
+.media__inner-row {
+    width: 100%;
+    display: flex;
+
+    //justify-content: flex-end;
+
+    .info {
+        width: 100%;
+    }
+
+    .select-btn {
+        align-items: center;
+    }
+}
