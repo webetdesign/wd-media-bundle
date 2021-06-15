@@ -4,13 +4,17 @@
 namespace WebEtDesign\MediaBundle\Controller\Admin;
 
 
+use Doctrine\ORM\EntityManagerInterface;
 use Liip\ImagineBundle\Imagine\Cache\CacheManager;
 use Sonata\AdminBundle\Controller\CRUDController;
+use Symfony\Component\Form\FormRenderer;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Twig\Error\RuntimeError;
 use Vich\UploaderBundle\Templating\Helper\UploaderHelper;
 use WebEtDesign\MediaBundle\Entity\Media;
+use const E_USER_DEPRECATED;
 
 class MediaAdminController extends CRUDController
 {
@@ -21,17 +25,17 @@ class MediaAdminController extends CRUDController
     /**
      * @var UploaderHelper
      */
-    private UploaderHelper $uploaderHelper;
+    private UploaderHelper         $uploaderHelper;
+    private EntityManagerInterface $em;
 
-    /**
-     * @inheritDoc
-     */
     public function __construct(
         CacheManager $cacheManager,
-        UploaderHelper $uploaderHelper
+        UploaderHelper $uploaderHelper,
+        EntityManagerInterface $entityManager
     ) {
         $this->cacheManager   = $cacheManager;
         $this->uploaderHelper = $uploaderHelper;
+        $this->em             = $entityManager;
     }
 
 
@@ -47,7 +51,7 @@ class MediaAdminController extends CRUDController
 
 
     /**
-     * @phpstan-param T $object
+     * @phpstan-param $object
      * @param Request $request
      * @param object $object
      * @return JsonResponse
@@ -64,7 +68,7 @@ class MediaAdminController extends CRUDController
                 implode('", "', $request->getAcceptableContentTypes()),
                 $request->getMethod(),
                 $request->getUri()
-            ), \E_USER_DEPRECATED);
+            ), E_USER_DEPRECATED);
         }
 
         if (in_array($object->getMimeType(), ['image/png', 'image/jpeg', 'image/tiff'])) {
@@ -86,7 +90,55 @@ class MediaAdminController extends CRUDController
             ],
             'objectId'   => $this->admin->getNormalizedIdentifier($object),
             'objectName' => $this->escapeHtml($this->admin->toString($object)),
-        ], Response::HTTP_OK);
+        ]);
+    }
+
+    /**
+     * @throws RuntimeError
+     */
+    public function ckeditorBrowserAction(Request $request): Response
+    {
+
+        $this->admin->checkAccess('list');
+
+        $datagrid = $this->admin->getDatagrid();
+
+        $category = $request->get('category');
+
+        $datagrid->setValue('category', null, $category);
+
+        $formView = $datagrid->getForm()->createView();
+
+        $twig = $this->get('twig');
+        $twig->getRuntime(FormRenderer::class)->setTheme($formView, $this->admin->getFilterTheme());
+
+        return $this->renderWithExtraParams($this->admin->getTemplate('browser'), [
+            'action'   => 'browser',
+            'form'     => $formView,
+            'datagrid' => $datagrid,
+        ]);
+    }
+
+    public function ckeditorUploadAction(Request $request): Response
+    {
+
+        $this->admin->checkAccess('create');
+
+        $file     = $request->files->get('upload');
+        $category = $request->get('category');
+
+        $media = new Media();
+
+        $media->setFile($file)
+            ->setCategory($category);
+
+        $this->em->persist($media);
+        $this->em->flush();
+
+        return $this->renderWithExtraParams($this->admin->getTemplate('upload'), [
+            'action' => 'list',
+            'object' => $media,
+        ]);
     }
 
 

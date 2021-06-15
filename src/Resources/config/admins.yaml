@@ -8,3 +8,5 @@ services:
     calls:
       - [ setTranslationDomain, [ 'wd_media'] ]
       - [ setTemplate, [ 'inner_list_row', '@@WDMedia/admin/Media/inner_row_media.html.twig'] ]
+      - [ setTemplate, [ 'browser', '@@WDMedia/admin/Media/ckeditor_browser.html.twig'] ]
+      - [ setTemplate, [ 'upload', '@@WDMedia/admin/Media/ckeditor_upload.html.twig'] ]

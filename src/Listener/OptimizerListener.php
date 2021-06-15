@@ -35,16 +35,17 @@ class OptimizerListener
     private function optimize($object, $property)
     {
         $categories = $this->parameterBag->get('wd_media.categories');
-        $config = $categories[$object->getCategory()];
+        $config     = $categories[$object->getCategory()];
 
         $method = 'get' . ucfirst($property);
 
         if (in_array($object->getMimeType(), ['image/jpeg', 'image/png', 'image/tiff'])) {
             $imagick = new Imagick($object->$method()->getPathname());
-            $d = $imagick->getImageGeometry();
-            if ($d['width'] > $d['height']) {
+            $d       = $imagick->getImageGeometry();
+            if ($d['width'] > $d['height'] && $d['width'] > $config['pre_upload']['max_width']) {
                 $imagick->scaleImage($config['pre_upload']['max_width'], null);
-            } else {
+            }
+            if ($d['width'] < $d['height'] && $d['height'] > $config['pre_upload']['max_height']) {
                 $imagick->scaleImage(null, $config['pre_upload']['max_height']);
             }
             $imagick->setImageFormat($object->$method()->getExtension());

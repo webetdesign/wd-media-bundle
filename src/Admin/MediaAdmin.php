@@ -5,9 +5,11 @@ declare(strict_types=1);
 namespace WebEtDesign\MediaBundle\Admin;
 
 use Sonata\AdminBundle\Admin\AbstractAdmin;
+use Sonata\AdminBundle\Admin\AdminInterface;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
+use Sonata\AdminBundle\Route\RouteCollection;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormEvent;
@@ -18,8 +20,16 @@ use WebEtDesign\MediaBundle\Form\Type\CategoryType;
 
 final class MediaAdmin extends AbstractAdmin
 {
+    protected function configureRoutes(RouteCollection $collection)
+    {
+        $collection->add('ckeditor_browser', 'ckeditor_browser', [
+//            '_controller' => 'SonataFormatterBundle:CkeditorAdmin:browser',
+        ]);
 
-
+        $collection->add('ckeditor_upload', 'ckeditor_upload', [
+//            '_controller' => 'SonataFormatterBundle:CkeditorAdmin:upload',
+        ]);
+    }
 
     protected function configureDatagridFilters(DatagridMapper $filter): void
     {
