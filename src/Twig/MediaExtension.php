@@ -59,16 +59,24 @@ class MediaExtension extends AbstractExtension
         ];
     }
 
-    public function media(Media $media): ?string
+    public function media(?Media $media): ?string
     {
+        if (!$media) {
+            return null;
+        }
+
         return $this->mediaService->getMediaPath($media);
     }
 
     /**
      * @throws NotFoundException
      */
-    public function mediaImage(Media $media, $format, $device = null): ?string
+    public function mediaImage(?Media $media, $format, $device = null): ?string
     {
+        if (!$media) {
+            return null;
+        }
+
         return $this->mediaService->getImagePath($media, $format, $device);
     }
 
@@ -78,8 +86,12 @@ class MediaExtension extends AbstractExtension
      * @throws RuntimeError
      * @throws LoaderError
      */
-    public function mediaResponsive(Media $media, $format): string
+    public function mediaResponsive(?Media $media, $format): ?string
     {
+        if (!$media) {
+            return null;
+        }
+
         $responsiveConfig = $this->parameterBag->get('wd_media.responsive');
         $categoryConfig = $this->parameterBag->get('wd_media.categories')[$media->getCategory()];
 
