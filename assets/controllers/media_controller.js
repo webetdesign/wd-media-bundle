@@ -82,7 +82,13 @@ export default class extends Controller {
 
     const filters = 'filter%5Bcategory%5D%5Btype%5D=3&filter%5Bcategory%5D%5Bvalue%5D=' + this.category;
 
-    axios.get('/admin/webetdesign/media/media/list?' + filters, {
+    const uri = '/admin/webetdesign/media/media/list?' + filters;
+
+    this.fetchList(uri);
+  }
+
+  fetchList(uri) {
+    axios.get(uri, {
       headers: { 'X-Requested-With': 'XMLHttpRequest' },
     })
       .then(response => {
@@ -101,6 +107,15 @@ export default class extends Controller {
                 });
               });
           });
+
+        this.modal.modal.querySelectorAll('.pagination a').forEach(link => {
+          console.log(link);
+          link.addEventListener('click', e => {
+            e.preventDefault();
+
+            this.fetchList(link.href);
+          })
+        })
       });
   }
 
@@ -119,8 +134,6 @@ export default class extends Controller {
       headers: { 'X-Requested-With': 'XMLHttpRequest' },
     })
       .then(response => {
-        console.log(response);
-
         this.updateMedia(response.data.media);
 
         this.modal.hide();
@@ -190,8 +203,6 @@ export default class extends Controller {
     this.modal.setBody(body);
     this.modal.setFooter(footer);
 
-    console.log(this.modal.modal.querySelector('.js-btn-save'));
-
     this.modal.modal.querySelector('.js-btn-save')
       .addEventListener('click', async e => {
         const ret = await this.saveCrop();
@@ -229,8 +240,6 @@ export default class extends Controller {
   isCropable() {
     let ret = false;
 
-    console.log(this.category);
-
     if (this.media && ['image/jpeg', 'image/png'].includes(this.media.mimeType) ) {
       Object.keys(this.config.categories[this.category].formats)
         .forEach(format => {
@@ -241,8 +250,6 @@ export default class extends Controller {
           }
         });
     }
-
-    console.log(ret);
 
     return ret;
   }
