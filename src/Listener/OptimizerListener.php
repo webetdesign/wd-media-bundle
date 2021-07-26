@@ -51,7 +51,7 @@ class OptimizerListener
             $imagick->setImageFormat($object->$method()->getExtension());
             $imagick->writeImage($object->$method()->getPathname());
 
-            $optimizerChain = OptimizerChainFactory::create();
+            $optimizerChain = OptimizerChainFactory::create(['quality' => $config['pre_upload']['quality']]);
             $optimizerChain->optimize($object->$method()->getPathname());
         }
     }

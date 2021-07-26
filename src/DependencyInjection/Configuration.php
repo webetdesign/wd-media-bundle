@@ -64,6 +64,7 @@ class Configuration implements ConfigurationInterface
             ->children()
                 ->scalarNode('max_width')->defaultValue(1920)->end()
                 ->scalarNode('max_height')->defaultValue(1920)->end()
+                ->scalarNode('quality')->defaultValue(75)->end()
             ->end()
         ;
 
