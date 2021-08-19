@@ -9,26 +9,15 @@ use Liip\ImagineBundle\Imagine\Cache\CacheManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Vich\UploaderBundle\Templating\Helper\UploaderHelper;
 use WebEtDesign\MediaBundle\Entity\Media;
-use WebEtDesign\MediaBundle\Form\Type\MediaType;
 
 class ApiMediaController extends AbstractController
 {
 
-    /**
-     * @var EntityManagerInterface
-     */
     private EntityManagerInterface $em;
-    /**
-     * @var CacheManager
-     */
     private CacheManager $cacheManager;
-    /**
-     * @var UploaderHelper
-     */
     private UploaderHelper $uploaderHelper;
 
     public function __construct(
@@ -45,6 +34,7 @@ class ApiMediaController extends AbstractController
      * @param Media $media
      *
      * @Route("/api/wdmedia/{id}", name="")
+     * @return JsonResponse
      */
     public function getMedia(Media $media)
     {
@@ -67,13 +57,13 @@ class ApiMediaController extends AbstractController
         ]);
     }
 
-
     /**
      * @param Request $request
      * @param Media $media
      *
      * @Route("/api/wdmedia/setcrop/{id}", name="api_wdmedia_setcrop", methods={"POST"})
      *
+     * @return JsonResponse
      */
     public function patch(Request $request, Media $media)
     {
