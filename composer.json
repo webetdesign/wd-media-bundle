@@ -8,7 +8,7 @@
   "require": {
     "php": "^7.4",
     "ext-imagick": "*",
-    "sonata-project/admin-bundle": "4.x-dev",
+    "sonata-project/admin-bundle": "4.*",
     "spatie/image-optimizer": "^1.3",
     "vich/uploader-bundle": "^1.17.0"
   },
