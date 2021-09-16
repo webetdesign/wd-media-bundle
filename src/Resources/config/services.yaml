@@ -5,7 +5,10 @@ services:
 
   WebEtDesign\MediaBundle\:
     resource: '../../*'
-    exclude: '../src/{DependencyInjection,Entity}'
+    exclude:
+      - '../src/DependencyInjection'
+      - '../src/Entity'
+      - '../src/Command/Sonata'
 
   WebEtDesign\MediaBundle\Controller\:
     resource: '../../Controller'

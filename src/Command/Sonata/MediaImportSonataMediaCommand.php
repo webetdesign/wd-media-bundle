@@ -1,6 +1,6 @@
 <?php
 
-namespace WebEtDesign\MediaBundle\Command;
+namespace WebEtDesign\MediaBundle\Command\Sonata;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;

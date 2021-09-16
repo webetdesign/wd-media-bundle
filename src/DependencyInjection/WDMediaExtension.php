@@ -6,6 +6,7 @@ use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
+use WebEtDesign\RgpdBundle\Annotations\Exportable;
 
 /**
  * This is the class that loads and manages your bundle configuration.
@@ -30,5 +31,10 @@ class WDMediaExtension extends Extension
         $loader->load('admins.yaml');
         $loader->load('doctrine.yaml');
         $loader->load('cms_content.yaml');
+
+        $bundles         = $container->getParameter('kernel.bundles');
+        if (isset($bundles['SonataMediaBundle'])) {
+            $loader->load('sonata_migration.yaml');
+        }
     }
 }

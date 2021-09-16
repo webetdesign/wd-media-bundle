@@ -1,0 +1,6 @@
+services:
+  WebEtDesign\MediaBundle\Command\Sonata\MediaImportSonataMediaCommand:
+    autowire: true
+    autoconfigure: true
+    tags:
+      - { name: console.command }
