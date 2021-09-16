@@ -51,7 +51,9 @@ class MediaListener
         if ($entity->getFile()) {
             /** @var UploadedFile $file */
             $file = $entity->getFile();
-            $entity->setLabel($file->getClientOriginalName());
+            if ($file instanceof UploadedFile) {
+                $entity->setLabel($file->getClientOriginalName());
+            }
         }
     }
 
