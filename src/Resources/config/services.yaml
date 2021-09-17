@@ -6,9 +6,9 @@ services:
   WebEtDesign\MediaBundle\:
     resource: '../../*'
     exclude:
-      - '../src/DependencyInjection'
-      - '../src/Entity'
-      - '../src/Command/Sonata'
+      - '../../DependencyInjection'
+      - '../../Entity'
+      - '../../Command/Sonata'
 
   WebEtDesign\MediaBundle\Controller\:
     resource: '../../Controller'
