@@ -32,7 +32,7 @@ class MakeCategory extends AbstractMaker
         return 'make:media-category';
     }
 
-    public function getCommandDescription(): string
+    public static function getCommandDescription(): string
     {
         return 'Add new media category in configuration file';
     }
