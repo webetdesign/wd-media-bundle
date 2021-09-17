@@ -6,7 +6,7 @@
   "license": "MIT",
   "minimum-stability": "dev",
   "require": {
-    "php": "^7.4",
+    "php": "^7.4|^8.0",
     "ext-imagick": "*",
     "sonata-project/admin-bundle": "^3.51",
     "spatie/image-optimizer": "^1.3",
