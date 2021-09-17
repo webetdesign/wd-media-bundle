@@ -17,7 +17,8 @@ class CategoryType extends AbstractType
      */
     private ParameterBagInterface $parameterBag;
 
-    public function __construct(ParameterBagInterface $parameterBag) {
+    public function __construct(ParameterBagInterface $parameterBag)
+    {
         $this->parameterBag = $parameterBag;
     }
 
@@ -35,7 +36,11 @@ class CategoryType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'choices' => $this->buildChoices()
+            'choices'          => $this->buildChoices(),
+            'operator_type'    => null,
+            'operator_options' => null,
+            'field_type'       => null,
+            'field_options'    => null,
         ]);
     }
 

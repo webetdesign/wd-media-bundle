@@ -5,18 +5,15 @@ declare(strict_types=1);
 namespace WebEtDesign\MediaBundle\Admin;
 
 use Sonata\AdminBundle\Admin\AbstractAdmin;
-use Sonata\AdminBundle\Admin\AdminInterface;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
-use Sonata\AdminBundle\Route\RouteCollection;
 use Sonata\AdminBundle\Route\RouteCollectionInterface;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
-use Symfony\Component\Validator\Constraints\File;
-use Vich\UploaderBundle\Form\Type\VichFileType;
+use WebEtDesign\MediaBundle\Form\Type\CategoryFilterType;
 use WebEtDesign\MediaBundle\Form\Type\CategoryType;
 
 final class MediaAdmin extends AbstractAdmin
@@ -37,9 +34,10 @@ final class MediaAdmin extends AbstractAdmin
         $filter
             ->add('id')
             ->add('label')
-            ->add('category', CategoryType::class, [
+            ->add('category', CategoryFilterType::class, [
                 'show_filter' => !$this->getRequest()->isXmlHttpRequest()
-            ]);
+            ])
+        ;
     }
 
     protected function configureListFields(ListMapper $list): void

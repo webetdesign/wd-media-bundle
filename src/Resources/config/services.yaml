@@ -17,3 +17,10 @@ services:
   WebEtDesign\MediaBundle\Listener\OptimizerListener:
     tags:
       - { name: kernel.event_listener, event: vich_uploader.post_upload }
+
+  WebEtDesign\MediaBundle\Form\Type\CategoryFilterType:
+    autowire: true
+    autoconfigure: true
+    public: true
+    tags:
+      - { name: sonata.admin.filter.type }
