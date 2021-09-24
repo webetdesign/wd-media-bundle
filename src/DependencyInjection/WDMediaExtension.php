@@ -26,10 +26,17 @@ class WDMediaExtension extends Extension
         $container->setParameter('wd_media.categories', $config['categories']);
         $container->setParameter('wd_media.responsive', $config['responsive']);
 
-        $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
+        $loader = new Loader\YamlFileLoader($container,
+            new FileLocator(__DIR__ . '/../Resources/config'));
         $loader->load('services.yaml');
         $loader->load('admins.yaml');
         $loader->load('doctrine.yaml');
         $loader->load('cms_content.yaml');
+        $loader->load('media_extension.yaml');
+
+        $bundles = $container->getParameter('kernel.bundles');
+        if (isset($bundles['LazyImageBundle'])) {
+            $loader->load('media_lazy_extension.yaml');
+        }
     }
 }

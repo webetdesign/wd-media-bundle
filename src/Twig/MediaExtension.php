@@ -21,9 +21,9 @@ class MediaExtension extends AbstractExtension
     /**
      * @var ParameterBagInterface
      */
-    private ParameterBagInterface $parameterBag;
-    private WDMediaService        $mediaService;
-    private Environment           $twig;
+    protected ParameterBagInterface $parameterBag;
+    protected WDMediaService $mediaService;
+    protected Environment    $twig;
 
     public function __construct(
         ParameterBagInterface $parameterBag,
