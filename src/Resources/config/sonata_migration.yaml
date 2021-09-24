@@ -1,5 +1,5 @@
 services:
-  WebEtDesign\MediaBundle\Command\Sonata\MediaImportSonataMediaCommand:
+  WebEtDesign\SonataMigrationBundle\Command\Media\MediaImportSonataMediaCommand:
     autowire: true
     autoconfigure: true
     tags:

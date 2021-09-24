@@ -8,7 +8,6 @@ services:
     exclude:
       - '../../DependencyInjection'
       - '../../Entity'
-      - '../../Command/Sonata'
 
   WebEtDesign\MediaBundle\Controller\:
     resource: '../../Controller'

@@ -31,10 +31,5 @@ class WDMediaExtension extends Extension
         $loader->load('admins.yaml');
         $loader->load('doctrine.yaml');
         $loader->load('cms_content.yaml');
-
-        $bundles         = $container->getParameter('kernel.bundles');
-        if (isset($bundles['SonataMediaBundle'])) {
-            $loader->load('sonata_migration.yaml');
-        }
     }
 }
