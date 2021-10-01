@@ -6,6 +6,7 @@ namespace WebEtDesign\MediaBundle\Twig;
 
 use Liip\ImagineBundle\Exception\Config\Filter\NotFoundException;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Twig\Environment;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
@@ -22,17 +23,20 @@ class MediaExtension extends AbstractExtension
      * @var ParameterBagInterface
      */
     protected ParameterBagInterface $parameterBag;
-    protected WDMediaService $mediaService;
-    protected Environment    $twig;
+    protected WDMediaService        $mediaService;
+    protected Environment           $twig;
+    private HttpClientInterface     $httpClient;
 
     public function __construct(
         ParameterBagInterface $parameterBag,
         WDMediaService $mediaService,
-        Environment $twig
+        Environment $twig,
+        HttpClientInterface $httpClient
     ) {
         $this->parameterBag = $parameterBag;
         $this->mediaService = $mediaService;
         $this->twig         = $twig;
+        $this->httpClient   = $httpClient;
     }
 
     public function getFunctions(): array
@@ -40,6 +44,7 @@ class MediaExtension extends AbstractExtension
         return [
             new TwigFunction('wd_media_path', [$this, 'media']),
             new TwigFunction('wd_media_image_path', [$this, 'mediaImage']),
+            new TwigFunction('wd_media_image_path_autoload', [$this, 'mediaImageAutoload']),
             new TwigFunction('wd_media_image_responsive', [$this, 'mediaResponsive'],
                 ['is_safe' => ['html']]),
         ];
@@ -82,6 +87,27 @@ class MediaExtension extends AbstractExtension
 
     /**
      * @throws NotFoundException
+     */
+    public function mediaImageAutoload(?Media $media, $format, $device = null): ?string
+    {
+        if (!$media) {
+            return null;
+        }
+
+        $path = $this->mediaService->getImagePath($media, $format, $device);
+        if (preg_match('/\/resolve\//', $path)) {
+            $response = $this->httpClient->request('GET', $path);
+            if ($response->getStatusCode() !== 200) {
+                return null;
+            }
+            return $this->mediaService->getImagePath($media, $format, $device);
+        }
+
+        return $path;
+    }
+
+    /**
+     * @throws NotFoundException
      * @throws SyntaxError
      * @throws RuntimeError
      * @throws LoaderError
@@ -93,7 +119,7 @@ class MediaExtension extends AbstractExtension
         }
 
         $responsiveConfig = $this->parameterBag->get('wd_media.responsive');
-        $categoryConfig = $this->parameterBag->get('wd_media.categories')[$media->getCategory()];
+        $categoryConfig   = $this->parameterBag->get('wd_media.categories')[$media->getCategory()];
 
         $devices = [];
 
