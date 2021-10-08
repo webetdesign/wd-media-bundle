@@ -70,15 +70,20 @@ class MediaLazyExtension extends AbstractExtension
             return null;
         }
 
-        $path = $this->mediaService->getImagePath($media, $format, $device);
+        $originale = $this->parameterBag->get('kernel.project_dir') . '/public' . $this->mediaService->getMediaPath($media);
 
-        if (!$path) {
+        if (!file_exists($originale)) {
             return null;
         }
 
-        $size = getimagesize($path);
+        $path = $this->mediaService->getImagePath($media, $format, $device);
+        $size = getimagesize($originale);
 
-        $blur = $this->blurHash->createDataUriThumbnail($path, $size[0] / 10, $size[1] / 10);
+        if (!$path || !$size) {
+            return null;
+        }
+
+        $blur = $this->blurHash->createDataUriThumbnail($originale, $size[0] / 10, $size[1] / 10);
 
         return sprintf('src="%s" data-hd-src="%s" data-controller="symfony--ux-lazy-image--lazy-image"',
             $blur, $path);
