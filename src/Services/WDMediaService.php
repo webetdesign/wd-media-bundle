@@ -8,6 +8,7 @@ use Exception;
 use Liip\ImagineBundle\Exception\Config\Filter\NotFoundException;
 use Liip\ImagineBundle\Imagine\Cache\CacheManager;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Vich\UploaderBundle\Templating\Helper\UploaderHelper;
 use WebEtDesign\MediaBundle\Entity\Media;
 
@@ -36,7 +37,7 @@ class WDMediaService
     /**
      * @throws NotFoundException
      */
-    public function getImagePath(Media $media, $format, $device = null): ?string
+    public function getImagePath(Media $media, $format, $device = null, $absoluteUrl = false): ?string
     {
         $path          = $this->uploaderHelper->asset($media);
         $runtimeConfig = $this->getRuntimeConfig($media, $format, $device);
@@ -44,7 +45,9 @@ class WDMediaService
         return $this->cacheManager->getBrowserPath(
             $path,
             'wd_media',
-            $runtimeConfig
+            $runtimeConfig,
+            null,
+            $absoluteUrl ? UrlGeneratorInterface::ABSOLUTE_URL : UrlGeneratorInterface::RELATIVE_PATH
         );
     }
 

@@ -76,31 +76,31 @@ class MediaExtension extends AbstractExtension
     /**
      * @throws NotFoundException
      */
-    public function mediaImage(?Media $media, $format, $device = null): ?string
+    public function mediaImage(?Media $media, $format, $device = null, $absoluteUrl = false): ?string
     {
         if (!$media) {
             return null;
         }
 
-        return $this->mediaService->getImagePath($media, $format, $device);
+        return $this->mediaService->getImagePath($media, $format, $device, $absoluteUrl);
     }
 
     /**
      * @throws NotFoundException
      */
-    public function mediaImageAutoload(?Media $media, $format, $device = null): ?string
+    public function mediaImageAutoload(?Media $media, $format, $device = null, $absoluteUrl = false): ?string
     {
         if (!$media) {
             return null;
         }
 
-        $path = $this->mediaService->getImagePath($media, $format, $device);
+        $path = $this->mediaService->getImagePath($media, $format, $device, $absoluteUrl);
         if (preg_match('/\/resolve\//', $path)) {
             $response = $this->httpClient->request('GET', $path);
             if ($response->getStatusCode() !== 200) {
                 return null;
             }
-            return $this->mediaService->getImagePath($media, $format, $device);
+            return $this->mediaService->getImagePath($media, $format, $device, $absoluteUrl);
         }
 
         return $path;
@@ -112,7 +112,7 @@ class MediaExtension extends AbstractExtension
      * @throws RuntimeError
      * @throws LoaderError
      */
-    public function mediaResponsive(?Media $media, $format): ?string
+    public function mediaResponsive(?Media $media, $format, $absoluteUrl = false): ?string
     {
         if (!$media) {
             return null;
@@ -126,7 +126,7 @@ class MediaExtension extends AbstractExtension
         foreach ($responsiveConfig as $device => $config) {
             if (isset($categoryConfig['formats'][$format][$device])) {
                 $devices[$device] = [
-                    'path'  => $this->mediaService->getImagePath($media, $format, $device),
+                    'path'  => $this->mediaService->getImagePath($media, $format, $device, $absoluteUrl),
                     'width' => $config['width'],
                 ];
             }
