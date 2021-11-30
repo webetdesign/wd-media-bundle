@@ -10,29 +10,37 @@
         <div class="image">
             {% if data %}
                 {% if data.mimeType not in ["image/png","image/jpeg","image/pipeg","image/tiff" ] %}
-                    <img src="{{ asset('bundles/wdmedia/img/files/' ~ data.extension ~ '.png') }}" alt="{{ data.extension }}" width="90">
+                    <img src="{{ asset('bundles/wdmedia/img/files/' ~ data.extension ~ '.png') }}"
+                         alt="{{ data.extension }}" width="90">
                 {% else %}
-                    <img src="{{ vich_uploader_asset(data) | imagine_filter('wd_media_admin_type') }}" alt="{{ data.label }}">
+                    <img src="{{ vich_uploader_asset(data) | imagine_filter('wd_media_admin_type') }}"
+                         alt="{{ data.label }}">
                 {% endif %}
             {% else %}
                 Aucun media
             {% endif %}
         </div>
         <div class="btn-group">
-            <button type="button" class="btn btn-default js-btn-add"><i class="fa fa-plus"></i>
-            </button>
-            <button type="button" class="btn btn-default js-btn-edit {% if data is null %}d-none{% endif %}">
-                <i class="fa fa-pencil"></i>
-            </button>
-            <button type="button" class="btn btn-info js-btn-list"><i class="fa fa-list"></i>
-            </button>
-            <button type="button" class="btn btn-danger js-btn-delete {% if data is null %}d-none{% endif %}"><i class="fa fa-trash"></i>
-            </button>
+            {% if form.vars.allow_add %}
+                <button type="button" class="btn btn-default js-btn-add"><i class="fa fa-plus"></i></button>
+            {% endif %}
+            {% if form.vars.allow_edit %}
+                <button type="button" class="btn btn-default js-btn-edit {% if data is null %}d-none{% endif %}"><i
+                            class="fa fa-pencil"></i></button>
+            {% endif %}
+            {% if form.vars.allow_list %}
+                <button type="button" class="btn btn-info js-btn-list"><i class="fa fa-list"></i></button>
+            {% endif %}
+            {% if form.vars.allow_delete %}
+                <button type="button" class="btn btn-danger js-btn-delete {% if data is null %}d-none{% endif %}"><i
+                            class="fa fa-trash"></i></button>
+            {% endif %}
         </div>
-        <div class="btn-group">
-            <button type="button" class="btn btn-default js-btn-crop d-none"><i class="fa fa-crop"></i>
-            </button>
-        </div>
+        {% if form.vars.allow_crop %}
+            <div class="btn-group">
+                <button type="button" class="btn btn-default js-btn-crop d-none"><i class="fa fa-crop"></i></button>
+            </div>
+        {% endif %}
     </div>
 
 {% endblock %}

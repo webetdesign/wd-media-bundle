@@ -27,6 +27,11 @@ class WDMediaType extends AbstractType
     {
         $view->vars['category'] = $options['category'];
         $view->vars['format']   = $options['format'];
+        $view->vars['allow_add']   = $options['allow_add'];
+        $view->vars['allow_edit']   = $options['allow_edit'];
+        $view->vars['allow_list']   = $options['allow_list'];
+        $view->vars['allow_delete']   = $options['allow_delete'];
+        $view->vars['allow_crop']   = $options['allow_crop'];
         $view->vars['wd_media_config'] = [
             'categories' => $this->parameterBag->get('wd_media.categories'),
             'responsive' => $this->parameterBag->get('wd_media.responsive'),
@@ -41,6 +46,11 @@ class WDMediaType extends AbstractType
         $resolver->setDefaults([
             'class'      => Media::class,
             'format'     => null,
+            'allow_add' => true,
+            'allow_edit' => true,
+            'allow_list' => true,
+            'allow_delete' => true,
+            'allow_crop' => true,
         ]);
 
         $resolver->setRequired([

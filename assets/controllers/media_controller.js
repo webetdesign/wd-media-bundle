@@ -31,13 +31,13 @@ export default class extends Controller {
       crop: this.context.element.querySelector('.js-btn-crop'),
     };
 
-    this.btn.add.addEventListener('click', e => this.add(e));
-    this.btn.edit.addEventListener('click', e => this.edit(e));
-    this.btn.list.addEventListener('click', e => this.list(e));
-    this.btn.delete.addEventListener('click', e => this.delete(e));
-    this.btn.crop.addEventListener('click', e => this.crop(e));
+    this.btn.add ? this.btn.add.addEventListener('click', e => this.add(e)) : null;
+    this.btn.edit ? this.btn.edit.addEventListener('click', e => this.edit(e)) : null;
+    this.btn.list ? this.btn.list.addEventListener('click', e => this.list(e)) : null;
+    this.btn.delete ? this.btn.delete.addEventListener('click', e => this.delete(e)) : null;
+    this.btn.crop ? this.btn.crop.addEventListener('click', e => this.crop(e)) : null;
 
-    if (this.isCropable()) {
+    if (this.isCropable() && this.btn.crop) {
       this.btn.crop.classList.remove('d-none');
     }
   }
@@ -109,7 +109,6 @@ export default class extends Controller {
           });
 
         this.modal.modal.querySelectorAll('.pagination a').forEach(link => {
-          console.log(link);
           link.addEventListener('click', e => {
             e.preventDefault();
 
