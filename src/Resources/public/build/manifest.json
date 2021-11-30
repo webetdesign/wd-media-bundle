@@ -1,5 +1,4 @@
 {
   "bundles/wdmedia/build/media.css": "/bundles/wdmedia/build/media.css",
-  "bundles/wdmedia/build/media.js": "/bundles/wdmedia/build/media.js",
-  "bundles/wdmedia/build/runtime.js": "/bundles/wdmedia/build/runtime.js"
+  "bundles/wdmedia/build/media.js": "/bundles/wdmedia/build/media.js"
 }
