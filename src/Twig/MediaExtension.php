@@ -59,6 +59,7 @@ class MediaExtension extends AbstractExtension
         return [
             new TwigFilter('wd_media_path', [$this, 'media']),
             new TwigFilter('wd_media_image_path', [$this, 'mediaImage']),
+            new TwigFilter('wd_media_image_path_autoload', [$this, 'mediaImageAutoload']),
             new TwigFilter('wd_media_image_responsive', [$this, 'mediaResponsive'],
                 ['is_safe' => ['html']]),
         ];
