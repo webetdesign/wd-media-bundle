@@ -79,6 +79,13 @@ class Media
      */
     private ?string $cropData = null;
 
+    /**
+     * @var string|null
+     *
+     * @ORM\Column(type="string", nullable=true)
+     */
+    private ?string $description = null;
+
     public function __toString()
     {
         return $this->getLabel();
@@ -242,8 +249,6 @@ class Media
         return isset($crop[$format]) ? $crop[$format][$device] ?? null : null;
     }
 
-
-
     /**
      * @param string|null $cropData
      * @return Media
@@ -251,6 +256,24 @@ class Media
     public function setCropData(?string $cropData): Media
     {
         $this->cropData = $cropData;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    /**
+     * @param string|null $description
+     * @return Media
+     */
+    public function setDescription(?string $description): Media
+    {
+        $this->description = $description;
         return $this;
     }
 }

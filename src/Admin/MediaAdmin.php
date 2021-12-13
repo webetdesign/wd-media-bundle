@@ -12,6 +12,7 @@ use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Route\RouteCollection;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Validator\Constraints\File;
@@ -20,14 +21,16 @@ use WebEtDesign\MediaBundle\Form\Type\CategoryType;
 
 final class MediaAdmin extends AbstractAdmin
 {
+
+
     protected function configureRoutes(RouteCollection $collection)
     {
         $collection->add('ckeditor_browser', 'ckeditor_browser', [
-//            '_controller' => 'SonataFormatterBundle:CkeditorAdmin:browser',
+            //            '_controller' => 'SonataFormatterBundle:CkeditorAdmin:browser',
         ]);
 
         $collection->add('ckeditor_upload', 'ckeditor_upload', [
-//            '_controller' => 'SonataFormatterBundle:CkeditorAdmin:upload',
+            //            '_controller' => 'SonataFormatterBundle:CkeditorAdmin:upload',
         ]);
     }
 
@@ -59,33 +62,49 @@ final class MediaAdmin extends AbstractAdmin
 
     protected function configureFormFields(FormMapper $form): void
     {
+        $form->with('tab.file', ['class' => 'col-md-6', 'box_class' => 'box box-primary']);
+
         if (!$this->getSubject()->getId()) {
-            $form
-                ->add('category', CategoryType::class);
+            $form->add('category', CategoryType::class);
         }
 
         $form
             ->add('file', FileType::class, [
-                'required'     => true,
-//                'constraints' => [
-//                    new File([
-//                        'mimeTypes' => 'image/jpeg'
-//                    ])
-//                ],
-            ]);
+                'required' => !$this->getSubject()->getId(),
+                //                'constraints' => [
+                //                    new File([
+                //                        'mimeTypes' => 'image/jpeg'
+                //                    ])
+                //                ],
+            ])
+            ->end();
 
-        $form->getFormBuilder()->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
-            $media = $event->getData();
-            $form = $event->getForm();
+        if ($this->getSubject()->getId()) {
+            $form
+                ->with('tab.properties', ['class' => 'col-md-6', 'box_class' => 'box box-warning'])
+                ->add('label')
+                ->add('description', TextareaType::class, [
+                    'required' => false,
+                    'attr'     => [
+                        'data-controller' => 'char-counter',
+                    ],
+                ])
+                ->end();
+        }
 
-            if (!$media) {
-                return;
-            }
+        $form->getFormBuilder()->addEventListener(FormEvents::PRE_SET_DATA,
+            function (FormEvent $event) {
+                $media = $event->getData();
+                $form  = $event->getForm();
 
-            if ($media->getCategory()) {
-                $form->add('category', HiddenType::class);
-            }
-        });
+                if (!$media) {
+                    return;
+                }
+
+                if ($media->getCategory()) {
+                    $form->add('category', HiddenType::class);
+                }
+            });
     }
 
 }
