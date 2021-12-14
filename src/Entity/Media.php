@@ -6,6 +6,7 @@ namespace WebEtDesign\MediaBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 
@@ -27,6 +28,7 @@ class Media
      * @ORM\Id
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue(strategy="AUTO")
+     * @Groups({"media"})
      *
      */
     protected ?int $id = null;
@@ -35,6 +37,7 @@ class Media
      * @var string
      *
      * @ORM\Column(type="string")
+     * @Groups({"media"})
      */
     private string $label;
 
@@ -42,14 +45,20 @@ class Media
      * @var string|null
      *
      * @ORM\Column(type="string")
+     * @Groups({"media"})
      */
     private ?string $category = null;
 
+    /**
+     * @var string|null
+     * @Groups({"media"})
+     */
     private ?string $categoryLabel = null;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      * @var string|null
+     * @Groups({"media"})
      */
     private ?string $fileName = null;
 
@@ -63,12 +72,14 @@ class Media
     /**
      * @var string|null
      * @ORM\Column(type="string")
+     * @Groups({"media"})
      */
     private ?string $mimeType = null;
 
     /**
      * @var string|null
      * @ORM\Column(type="string")
+     * @Groups({"media"})
      */
     private ?string $extension = null;
 
@@ -83,6 +94,7 @@ class Media
      * @var string|null
      *
      * @ORM\Column(type="string", nullable=true)
+     * @Groups({"media"})
      */
     private ?string $description = null;
 

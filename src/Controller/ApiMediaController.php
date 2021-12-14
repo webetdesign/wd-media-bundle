@@ -5,7 +5,9 @@ namespace WebEtDesign\MediaBundle\Controller;
 
 
 use Doctrine\ORM\EntityManagerInterface;
+use Liip\ImagineBundle\Exception\Config\Filter\NotFoundException;
 use Liip\ImagineBundle\Imagine\Cache\CacheManager;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -14,6 +16,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Vich\UploaderBundle\Templating\Helper\UploaderHelper;
 use WebEtDesign\MediaBundle\Entity\Media;
 use WebEtDesign\MediaBundle\Form\Type\MediaType;
+use WebEtDesign\MediaBundle\Services\WDMediaService;
 
 class ApiMediaController extends AbstractController
 {
@@ -30,15 +33,18 @@ class ApiMediaController extends AbstractController
      * @var UploaderHelper
      */
     private UploaderHelper $uploaderHelper;
+    private WDMediaService $mediaService;
 
     public function __construct(
         EntityManagerInterface $em,
         CacheManager $cacheManager,
-        UploaderHelper $uploaderHelper
+        UploaderHelper $uploaderHelper,
+        WDMediaService $mediaService
     ) {
         $this->em             = $em;
         $this->cacheManager   = $cacheManager;
         $this->uploaderHelper = $uploaderHelper;
+        $this->mediaService   = $mediaService;
     }
 
     /**
@@ -92,6 +98,30 @@ class ApiMediaController extends AbstractController
 
 
         return new JsonResponse('', 200);
+    }
+
+    /**
+     * @param Media $media
+     * @param null $format
+     * @Route("/api/wdmedia/render/{id}", name="api_render_media", methods={"GET"})
+     * @Route("/api/wdmedia/render/{id}/{format}", name="api_render_image", methods={"GET"})
+     * @ParamConverter("media", class="WebEtDesign\MediaBundle\Entity\Media", options={"mapping": {"id": "id"}})
+     */
+    public function renderMedia(
+        Media $media,
+        $format = null
+    ) {
+        if ($format) {
+            $path = $this->mediaService->getImagePath($media, $format);
+        } else {
+            $path = $this->mediaService->getMediaPath($media);
+        }
+
+        if (!$path) {
+            throw new NotFoundHttpException();
+        }
+
+        return $this->redirect($path);
     }
 
     //    /**
