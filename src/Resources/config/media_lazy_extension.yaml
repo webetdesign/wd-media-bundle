@@ -1,0 +1,5 @@
+services:
+  WebEtDesign\MediaBundle\Twig\MediaLazyExtension:
+    autowire: true
+    tags:
+      - { name: twig.extension }

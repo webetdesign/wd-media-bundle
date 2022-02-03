@@ -5,7 +5,10 @@ services:
 
   WebEtDesign\MediaBundle\:
     resource: '../../*'
-    exclude: '../src/{DependencyInjection,Entity}'
+    exclude:
+      - '../../DependencyInjection'
+      - '../../Entity'
+      - '../../Twig'
 
   WebEtDesign\MediaBundle\Controller\:
     resource: '../../Controller'
