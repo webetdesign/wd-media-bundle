@@ -39,7 +39,7 @@ class Media
      * @ORM\Column(type="string")
      * @Groups({"media"})
      */
-    private string $label;
+    private string $label = '';
 
     /**
      * @var string|null

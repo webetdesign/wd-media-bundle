@@ -10,6 +10,7 @@ use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Route\RouteCollection;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -17,11 +18,24 @@ use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Validator\Constraints\File;
 use Vich\UploaderBundle\Form\Type\VichFileType;
+use WebEtDesign\MediaBundle\Entity\Media;
 use WebEtDesign\MediaBundle\Form\Type\CategoryType;
 
 final class MediaAdmin extends AbstractAdmin
 {
 
+    private ParameterBagInterface $parameterBag;
+
+    public function __construct(
+        $code,
+        $class,
+        $baseControllerName,
+        ParameterBagInterface $parameterBag
+    )
+    {
+        $this->parameterBag = $parameterBag;
+        parent::__construct($code, $class, $baseControllerName);
+    }
 
     protected function configureRoutes(RouteCollection $collection)
     {
@@ -62,6 +76,13 @@ final class MediaAdmin extends AbstractAdmin
 
     protected function configureFormFields(FormMapper $form): void
     {
+        /** @var Media $subject */
+        $subject = $this->getSubject();
+
+        if ($subject->getCategory()) {
+            $fileConstraintsOptions = $this->getFileConstraints($subject->getCategory());
+        }
+
         $form->with('tab.file', ['class' => 'col-md-6', 'box_class' => 'box box-primary']);
 
         if (!$this->getSubject()->getId()) {
@@ -70,12 +91,10 @@ final class MediaAdmin extends AbstractAdmin
 
         $form
             ->add('file', FileType::class, [
-                'required' => !$this->getSubject()->getId(),
-                //                'constraints' => [
-                //                    new File([
-                //                        'mimeTypes' => 'image/jpeg'
-                //                    ])
-                //                ],
+                'required'    => !$this->getSubject()->getId(),
+                'constraints' => [
+                    new File($fileConstraintsOptions ?? [])
+                ],
             ])
             ->end();
 
@@ -105,6 +124,38 @@ final class MediaAdmin extends AbstractAdmin
                     $form->add('category', HiddenType::class);
                 }
             });
+
+        $form->getFormBuilder()->addEventListener(FormEvents::PRE_SUBMIT,
+            function (FormEvent $event) {
+                $media = $event->getData();
+                $form  = $event->getForm();
+
+                if (!$media) {
+                    return;
+                }
+
+                if ($media['category']) {
+                    $form->remove('file');
+                    $form
+                        ->add('file', FileType::class, [
+                            'required'    => !$this->getSubject()->getId(),
+                            'constraints' => [
+                                new File($this->getFileConstraints($media['category']))
+                            ],
+                        ]);
+                }
+            });
+    }
+
+
+    public function getFileConstraints(string $category)
+    {
+        $categories = $this->parameterBag->get('wd_media.categories');
+        $catConfig = $categories[$category] ?? null;
+        if (!$catConfig) {
+            return null;
+        }
+        return $catConfig['pre_upload']['file_constraints'];
     }
 
 }

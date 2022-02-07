@@ -5,7 +5,6 @@ namespace WebEtDesign\MediaBundle\Controller;
 
 
 use Doctrine\ORM\EntityManagerInterface;
-use Liip\ImagineBundle\Exception\Config\Filter\NotFoundException;
 use Liip\ImagineBundle\Imagine\Cache\CacheManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -15,7 +14,6 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Vich\UploaderBundle\Templating\Helper\UploaderHelper;
 use WebEtDesign\MediaBundle\Entity\Media;
-use WebEtDesign\MediaBundle\Form\Type\MediaType;
 use WebEtDesign\MediaBundle\Services\WDMediaService;
 
 class ApiMediaController extends AbstractController
