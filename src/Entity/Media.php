@@ -87,6 +87,7 @@ class Media
      * @var string|null
      *
      * @ORM\Column(type="text", nullable=true)
+     * @Groups({"media"})
      */
     private ?string $cropData = null;
 

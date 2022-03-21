@@ -13,13 +13,14 @@ import Cropper from 'cropperjs';
  */
 export default class extends Controller {
   async connect() {
+    this.media = JSON.parse(this.context.element.dataset.media);
     this.config = JSON.parse(this.context.element.dataset.config);
     this.category = this.context.element.dataset.category;
     this.format = this.context.element.dataset.format;
     this.img = this.context.element.querySelector('img');
     this.device = Object.keys(this.config.categories[this.category].formats[this.format])[0];
 
-    this.cropConfigs= this.config.categories[this.category].formats[this.format];
+    this.cropConfigs = this.config.categories[this.category].formats[this.format];
     const cropConfig = this.cropConfigs[this.device].crop;
 
     this.createCropper(cropConfig);
@@ -29,8 +30,14 @@ export default class extends Controller {
       btn.addEventListener('click', e => this.changeDevice(e));
     });
 
-    this.crop = {};
     this.input = this.context.element.querySelector('input[data-format]');
+
+    let crop = {};
+    if (this.media.cropData && this.media.cropData.hasOwnProperty(this.format)) {
+      crop = this.media.cropData[this.format];
+    }
+
+    this.input.value = JSON.stringify(crop);
   }
 
   changeDevice(e) {
@@ -57,6 +64,7 @@ export default class extends Controller {
 
   createCropper(cropConfig) {
     const vm = this;
+    let ready = false;
     this.cropper = new Cropper(this.img, {
       width: 1350,
       minContainerWidth: 1300,
@@ -70,8 +78,11 @@ export default class extends Controller {
       // maxCropBoxHeight: 400,
       viewMode: 1,
       crop(event) {
-        vm.crop[vm.device] = event.detail;
-        vm.input.value = JSON.stringify(vm.crop);
+        if (ready) {
+          const crop = JSON.parse(vm.input.value);
+          crop[vm.device] = event.detail;
+          vm.input.value = JSON.stringify(crop);
+        }
       },
       ready(e) {
         const w = vm.cropper.getImageData().width;
@@ -80,11 +91,17 @@ export default class extends Controller {
         const nh = vm.cropper.getImageData().naturalHeight;
 
 
-
         this.cropper.setCropBoxData({
           width: cropConfig.width * w / nw,
           height: cropConfig.height * h / nh,
         });
+
+        const crop = JSON.parse(vm.input.value);
+        if (crop.hasOwnProperty(vm.device)) {
+          this.cropper.setData(crop[vm.device]);
+        }
+
+        ready = true;
       }
     });
   }

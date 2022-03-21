@@ -12,6 +12,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Serializer\SerializerInterface;
 use Vich\UploaderBundle\Templating\Helper\UploaderHelper;
 use WebEtDesign\MediaBundle\Entity\Media;
 use WebEtDesign\MediaBundle\Services\WDMediaService;
@@ -50,7 +51,7 @@ class ApiMediaController extends AbstractController
      *
      * @Route("/api/wdmedia/{id}", name="")
      */
-    public function getMedia(Media $media)
+    public function getMedia(Media $media, SerializerInterface $serializer)
     {
         if (in_array($media->getMimeType(), ['image/png', 'image/jpeg', 'image/tiff'])) {
             $path = $this->cacheManager->getBrowserPath($this->uploaderHelper->asset($media),
@@ -58,7 +59,6 @@ class ApiMediaController extends AbstractController
         } else {
             $path = '/bundles/wdmedia/img/files/' . $media->getExtension() . '.png';
         }
-
 
         return new JsonResponse([
             'id'            => $media->getId(),
@@ -68,6 +68,7 @@ class ApiMediaController extends AbstractController
             'mimeType'      => $media->getMimeType(),
             'path'          => $path,
             'reference'     => $this->uploaderHelper->asset($media),
+            'cropData'      => json_decode($media->getCropData(), true)
         ]);
     }
 

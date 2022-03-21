@@ -1,7 +1,11 @@
 import { Controller } from 'stimulus';
 import axios from 'axios';
 import BS3Modal from '../js/BS3Modal';
-import { CropperModalBodyTpl, CropperModalFooterTpl, isCroppable } from '../templatejs/cropperModalTemplate';
+import {
+  CropperModalBodyTpl,
+  CropperModalFooterTpl,
+  isCroppable
+} from '../templatejs/cropperModalTemplate';
 
 /*
  * WDMediaType js controller
@@ -62,7 +66,7 @@ export default class extends Controller {
   }
 
   edit(e) {
-    this.modal = new BS3Modal(this.id + '_modal', `<h3>Edition of ${this.media.label}</h3>` );
+    this.modal = new BS3Modal(this.id + '_modal', `<h3>Edition of ${this.media.label}</h3>`);
 
     axios.get('/admin/webetdesign/media/media/' + this.mediaId + '/edit', {
       headers: { 'X-Requested-With': 'XMLHttpRequest' },
@@ -108,13 +112,14 @@ export default class extends Controller {
               });
           });
 
-        this.modal.modal.querySelectorAll('.pagination a').forEach(link => {
-          link.addEventListener('click', e => {
-            e.preventDefault();
+        this.modal.modal.querySelectorAll('.pagination a')
+          .forEach(link => {
+            link.addEventListener('click', e => {
+              e.preventDefault();
 
-            this.fetchList(link.href);
-          })
-        })
+              this.fetchList(link.href);
+            });
+          });
       });
   }
 
@@ -233,13 +238,15 @@ export default class extends Controller {
       return false;
     }
 
+    this.media.cropData = crop
+
     return true;
   }
 
   isCropable() {
     let ret = false;
 
-    if (this.media && ['image/jpeg', 'image/png'].includes(this.media.mimeType) ) {
+    if (this.media && ['image/jpeg', 'image/png'].includes(this.media.mimeType)) {
       Object.keys(this.config.categories[this.category].formats)
         .forEach(format => {
           const conf = this.config.categories[this.category].formats[format];
