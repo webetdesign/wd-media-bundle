@@ -2,6 +2,10 @@
     display : flex;
     width   : 100%;
 
+    .cropper-canvas {
+        border: solid red 2px;
+    }
+
     .img-container {
         width  : 1350px;
         height : 700px;
