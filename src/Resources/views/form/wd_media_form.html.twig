@@ -10,8 +10,7 @@
         <div class="image">
             {% if data %}
                 {% if data.mimeType not in ["image/png","image/jpeg","image/pipeg","image/tiff" ] %}
-                    <img src="{{ asset('bundles/wdmedia/img/files/' ~ data.extension ~ '.png') }}"
-                         alt="{{ data.extension }}" width="90">
+                    <a target="_blank" href="{{ vich_uploader_asset(data)}}">{{ data.label }}</a>
                 {% else %}
                     <img src="{{ vich_uploader_asset(data) | imagine_filter('wd_media_admin_type') }}"
                          alt="{{ data.label }}">

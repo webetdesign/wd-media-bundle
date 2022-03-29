@@ -22,6 +22,7 @@ export default class extends Controller {
         this.mediaId = this.context.element.dataset.mediaId;
 
         this.media = this.mediaId ? await this.getMedia(this.mediaId) : null;
+        console.log(this.mediaId, this.media)
 
         this.input = this.context.element.querySelector('input[type="hidden"]');
 
@@ -102,7 +103,7 @@ export default class extends Controller {
                 this.modal.setBody(response.data);
                 this.modal.modal.querySelectorAll('td[objectId]')
                     .forEach((td) => {
-                        td.querySelectorAll('a')
+                        td.querySelectorAll('a:not(.disable-catch)')
                             .forEach(a => {
                                 a.addEventListener('click', async evt => {
                                     evt.preventDefault();

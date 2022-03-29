@@ -59,8 +59,10 @@ final class MediaAdmin extends AbstractAdmin
     protected function configureDatagridFilters(DatagridMapper $filter): void
     {
         $filter
-            ->add('id')
             ->add('label')
+            ->add('mimeType', null, [
+                'label' => 'Type de fichier'
+            ])
             ->add('category', null, [
                 'show_filter' => !$this->getRequest()->isXmlHttpRequest()
             ], CategoryType::class);
@@ -71,9 +73,15 @@ final class MediaAdmin extends AbstractAdmin
         unset($this->listModes['mosaic']);
 
         $list
-            ->add('label')
-            ->add('categoryLabel')
-            ->add('fileName')
+            ->add('label', null, [
+                'label' => 'Fichier'
+            ])
+            ->add('link', null, [
+                'label' => 'Lien'
+            ])
+            ->add('createdAt', null, [
+                'label' => 'Date de création'
+            ])
             ->add(ListMapper::NAME_ACTIONS, null, [
                 'actions' => [
                     'edit' => [],
@@ -88,6 +96,10 @@ final class MediaAdmin extends AbstractAdmin
         $subject = $this->getSubject();
         $em = $this->em;
 
+        $this->setFormTheme(array_merge($this->getFormTheme(), [
+            '@WDMedia/admin/media/file_type.html.twig',
+        ]));
+
         if ($subject->getCategory()) {
             $fileConstraintsOptions = $this->getFileConstraints($subject->getCategory());
         }
@@ -101,9 +113,13 @@ final class MediaAdmin extends AbstractAdmin
         $form
             ->add('file', FileType::class, [
                 'required' => !$this->getSubject()->getId(),
+                'attr' => [
+                    'categories' => json_encode($this->parameterBag->get('wd_media.categories')),
+                    'responsive' => json_encode($this->parameterBag->get('wd_media.responsive')),
+                ],
                 'constraints' => [
                     new File($fileConstraintsOptions ?? [])
-                ],
+                ]
             ])
             ->end();
 
@@ -182,6 +198,8 @@ final class MediaAdmin extends AbstractAdmin
                 }
             });
     }
+
+
 
 
     public function getFileConstraints(string $category)

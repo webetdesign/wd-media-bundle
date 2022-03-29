@@ -1,0 +1,36 @@
+{% block file_widget %}
+    {% set media = form.parent.vars.value %}
+    {% if not media %}
+        {{ form_widget(form) }}
+    {% else %}
+        <div data-controller="media"
+             data-id="{{ form.vars.id }}"
+             data-category="{{ media.category }}"
+             data-media-id="{{ media ? media.id : null }}"
+             data-config-responsive="{{ form.vars.attr.responsive}}"
+             data-config-categories="{{ form.vars.attr.categories}}"
+        >
+
+            {{ form_widget(form) }}
+            <div class="btn-group">
+                <button id="btn-copy-clipboard-{{ media.id }}"
+                        data-toggle="tooltip"
+                        data-placement="top"
+                        title="Copier le lien"
+                        data-link="{{ wd_media_link(media) }}"
+                        type="button"
+                        class="btn btn-default js-btn-link "
+                >
+                    <i class="fa fa-link"></i>
+                </button>
+                <button type="button" class="btn btn-default js-btn-crop d-none"><i class="fa fa-crop"></i></button>
+            </div>
+        </div>
+        {% if media.mimeType not in ["image/png","image/jpeg","image/pipeg","image/tiff" ] %}
+            <a target="_blank" href="{{ vich_uploader_asset(media)}}">{{ media.label }}</a>
+        {% else %}
+            <img src="{{ vich_uploader_asset(media) | imagine_filter('wd_media_admin_type') }}"
+                 alt="{{ media.label }}">
+        {% endif %}
+    {% endif %}
+{% endblock %}

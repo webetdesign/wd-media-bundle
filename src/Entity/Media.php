@@ -249,6 +249,10 @@ class Media
      */
     public function getExtension(): ?string
     {
+        if (!$this->extension && $this->mimeType){
+            return strrev(substr(strrev($this->mimeType), 0,strpos(strrev($this->mimeType), '/')));
+        }
+
         return $this->extension;
     }
 
