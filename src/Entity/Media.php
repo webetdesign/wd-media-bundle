@@ -99,6 +99,14 @@ class Media
      */
     private ?string $description = null;
 
+    /**
+     * @var null|string
+     *
+     * @ORM\Column(type="text", nullable=true)
+     * @Groups({"media"})
+     */
+    private ?string $permalink = '';
+
     public function __toString()
     {
         return $this->getLabel();
@@ -289,4 +297,23 @@ class Media
         $this->description = $description;
         return $this;
     }
+
+    /**
+     * @return string|null
+     */
+    public function getPermalink(): ?string
+    {
+        return $this->permalink;
+    }
+
+    /**
+     * @param null|string $permalink
+     * @return Media
+     */
+    public function setPermalink(?string $permalink): Media
+    {
+        $this->permalink = $permalink;
+        return $this;
+    }
+
 }

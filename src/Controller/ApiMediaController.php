@@ -5,10 +5,12 @@ namespace WebEtDesign\MediaBundle\Controller;
 
 
 use Doctrine\ORM\EntityManagerInterface;
+use Liip\ImagineBundle\Exception\Config\Filter\NotFoundException;
 use Liip\ImagineBundle\Imagine\Cache\CacheManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
@@ -102,14 +104,45 @@ class ApiMediaController extends AbstractController
     /**
      * @param Media $media
      * @param null $format
+     * @return RedirectResponse
+     * @throws NotFoundException
      * @Route("/api/wdmedia/render/{id}", name="api_render_media", methods={"GET"})
      * @Route("/api/wdmedia/render/{id}/{format}", name="api_render_image", methods={"GET"})
+     *
      * @ParamConverter("media", class="WebEtDesign\MediaBundle\Entity\Media", options={"mapping": {"id": "id"}})
      */
     public function renderMedia(
         Media $media,
         $format = null
-    ) {
+    ): RedirectResponse
+    {
+        if ($format) {
+            $path = $this->mediaService->getImagePath($media, $format);
+        } else {
+            $path = $this->mediaService->getMediaPath($media);
+        }
+
+        if (!$path) {
+            throw new NotFoundHttpException();
+        }
+
+        return $this->redirect($path);
+    }
+
+    /**
+     * @param Media $media
+     * @param null $format
+     * @return RedirectResponse
+     * @throws NotFoundException
+     * @Route("/api/wdmedia/download/{permalink}/{format}", name="api_dmedia_download_slug")
+     *
+     * @ParamConverter("media", class="WebEtDesign\MediaBundle\Entity\Media", options={"mapping": {"permalink": "permalink"}})
+     */
+    public function renderMediaPermalink(
+        Media $media,
+              $format = null
+    ): RedirectResponse
+    {
         if ($format) {
             $path = $this->mediaService->getImagePath($media, $format);
         } else {
