@@ -147,8 +147,12 @@ class MediaExtension extends AbstractExtension
         ]);
     }
 
-    public function mediaLink (?Media $media): string
+    public function mediaLink (?Media $media = null): string
     {
+        if (!$media || !$media->getId()){
+            return '';
+        }
+
         $categories = $this->parameterBag->get('wd_media.categories');
         $format     = isset($categories[$media->getCategory()]) ? array_key_first($categories[$media->getCategory()]['formats']) : null;
 
