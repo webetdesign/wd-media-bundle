@@ -22,7 +22,6 @@ export default class extends Controller {
         this.mediaId = this.context.element.dataset.mediaId;
 
         this.media = this.mediaId ? await this.getMedia(this.mediaId) : null;
-        console.log(this.mediaId, this.media)
 
         this.input = this.context.element.querySelector('input[type="hidden"]');
 
@@ -34,7 +33,7 @@ export default class extends Controller {
             list: this.context.element.querySelector('.js-btn-list'),
             delete: this.context.element.querySelector('.js-btn-delete'),
             crop: this.context.element.querySelector('.js-btn-crop'),
-            link: this.context.element.querySelector('.js-btn-link'),
+            links: this.context.element.querySelectorAll('.js-btn-link'),
         };
 
         this.btn.add ? this.btn.add.addEventListener('click', e => this.add(e)) : null;
@@ -42,7 +41,7 @@ export default class extends Controller {
         this.btn.list ? this.btn.list.addEventListener('click', e => this.list(e)) : null;
         this.btn.delete ? this.btn.delete.addEventListener('click', e => this.delete(e)) : null;
         this.btn.crop ? this.btn.crop.addEventListener('click', e => this.crop(e)) : null;
-        this.btn.link ? this.btn.link.addEventListener('click', e => this.link(e)) : null;
+        this.btn.links ? this.btn.links.forEach((link) => link.addEventListener('click', e => this.link(e))) : null;
 
         if (this.isCropable() && this.btn.crop) {
             this.btn.crop.classList.remove('d-none');
@@ -289,18 +288,9 @@ export default class extends Controller {
 
     link(e) {
         let btn = e.target;
-        if (btn.nodeName !== 'BUTTON') btn = btn.parentNode
-
+        console.log(e, btn)
         let {link} = btn.dataset;
         navigator.clipboard.writeText(link);
-        let save_title = btn.title;
-        btn.title = 'Lien copié dans le presse-papier'
         alert('Lien copié dans le presse-papier')
-        btn.style.border = '1px solid green'
-
-        setTimeout(() => {
-            btn.title = save_title
-            btn.style.border = null
-        }, 1000)
     }
 }

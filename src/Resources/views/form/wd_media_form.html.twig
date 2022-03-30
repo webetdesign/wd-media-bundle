@@ -19,18 +19,9 @@
                 Aucun media
             {% endif %}
         </div>
-        <div class="btn-group">
+        <div class="btn-group d-flex">
             {% if data %}
-                <button id="btn-copy-clipboard-{{ data.id }}"
-                        data-toggle="tooltip"
-                        data-placement="top"
-                        title="Copier le lien"
-                        data-link="{{ wd_media_link(data) }}"
-                        type="button"
-                        class="btn btn-default js-btn-link "
-                >
-                    <i class="fa fa-link"></i>
-                </button>
+                {% include '@WDMedia/admin/Media/copy_dropdown.html.twig' with {media: data}%}
             {% endif %}
             {% if form.vars.allow_add %}
                 <button type="button" class="btn btn-default js-btn-add"><i class="fa fa-plus"></i></button>
@@ -53,5 +44,6 @@
             </div>
         {% endif %}
     </div>
+
 
 {% endblock %}

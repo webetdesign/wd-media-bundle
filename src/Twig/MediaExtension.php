@@ -52,6 +52,7 @@ class MediaExtension extends AbstractExtension
             new TwigFunction('wd_media_image_responsive', [$this, 'mediaResponsive'],
                 ['is_safe' => ['html']]),
             new TwigFunction('wd_media_link', [$this, 'mediaLink']),
+            new TwigFunction('wd_media_formats', [$this, 'mediaFormats']),
 
         ];
     }
@@ -69,6 +70,8 @@ class MediaExtension extends AbstractExtension
             new TwigFilter('wd_media_image_responsive', [$this, 'mediaResponsive'],
                 ['is_safe' => ['html']]),
             new TwigFilter('wd_media_link', [$this, 'mediaLink']),
+            new TwigFilter('wd_media_formats', [$this, 'mediaFormats']),
+
 
         ];
     }
@@ -147,14 +150,17 @@ class MediaExtension extends AbstractExtension
         ]);
     }
 
-    public function mediaLink (?Media $media = null): string
+    public function mediaLink (?Media $media = null, ?string $format = null): string
     {
         if (!$media || !$media->getId()){
             return '';
         }
 
         $categories = $this->parameterBag->get('wd_media.categories');
-        $format     = isset($categories[$media->getCategory()]) ? array_key_first($categories[$media->getCategory()]['formats']) : null;
+
+        if (!$format){
+            $format     = isset($categories[$media->getCategory()]) ? array_key_first($categories[$media->getCategory()]['formats']) : null;
+        }
 
         return $this->urlGenerator->generate($media->getPermalink() ? 'api_dmedia_download_slug' : 'api_render_image', array_merge(
             $media->getPermalink() ? ['permalink' => $media->getPermalink()] : ['id' => $media->getId()],
@@ -162,5 +168,15 @@ class MediaExtension extends AbstractExtension
                 'format' => $format
             ]
         ), UrlGeneratorInterface::ABSOLUTE_URL);
+    }
+
+    public function mediaFormats (?Media $media = null ): array
+    {
+        if (!$media || !$media->getId()){
+            return [];
+        }
+        $categories = $this->parameterBag->get('wd_media.categories');
+
+        return isset($categories[$media->getCategory()]) ? array_keys($categories[$media->getCategory()]['formats']) : [];
     }
 }
