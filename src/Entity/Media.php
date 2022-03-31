@@ -6,6 +6,7 @@ namespace WebEtDesign\MediaBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 
@@ -27,6 +28,7 @@ class Media
      * @ORM\Id
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue(strategy="AUTO")
+     * @Groups({"media"})
      *
      */
     protected ?int $id = null;
@@ -35,21 +37,28 @@ class Media
      * @var string
      *
      * @ORM\Column(type="string")
+     * @Groups({"media"})
      */
-    private string $label;
+    private string $label = '';
 
     /**
      * @var string|null
      *
      * @ORM\Column(type="string")
+     * @Groups({"media"})
      */
     private ?string $category = null;
 
+    /**
+     * @var string|null
+     * @Groups({"media"})
+     */
     private ?string $categoryLabel = null;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      * @var string|null
+     * @Groups({"media"})
      */
     private ?string $fileName = null;
 
@@ -63,12 +72,14 @@ class Media
     /**
      * @var string|null
      * @ORM\Column(type="string")
+     * @Groups({"media"})
      */
     private ?string $mimeType = null;
 
     /**
      * @var string|null
      * @ORM\Column(type="string")
+     * @Groups({"media"})
      */
     private ?string $extension = null;
 
@@ -76,8 +87,25 @@ class Media
      * @var string|null
      *
      * @ORM\Column(type="text", nullable=true)
+     * @Groups({"media"})
      */
     private ?string $cropData = null;
+
+    /**
+     * @var string|null
+     *
+     * @ORM\Column(type="string", nullable=true)
+     * @Groups({"media"})
+     */
+    private ?string $description = null;
+
+    /**
+     * @var null|string
+     *
+     * @ORM\Column(type="text", nullable=true)
+     * @Groups({"media"})
+     */
+    private ?string $permalink = '';
 
     public function __toString()
     {
@@ -221,6 +249,10 @@ class Media
      */
     public function getExtension(): ?string
     {
+        if (!$this->extension && $this->mimeType){
+            return strrev(substr(strrev($this->mimeType), 0,strpos(strrev($this->mimeType), '/')));
+        }
+
         return $this->extension;
     }
 
@@ -242,8 +274,6 @@ class Media
         return isset($crop[$format]) ? $crop[$format][$device] ?? null : null;
     }
 
-
-
     /**
      * @param string|null $cropData
      * @return Media
@@ -253,4 +283,41 @@ class Media
         $this->cropData = $cropData;
         return $this;
     }
+
+    /**
+     * @return string|null
+     */
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    /**
+     * @param string|null $description
+     * @return Media
+     */
+    public function setDescription(?string $description): Media
+    {
+        $this->description = $description;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getPermalink(): ?string
+    {
+        return $this->permalink;
+    }
+
+    /**
+     * @param null|string $permalink
+     * @return Media
+     */
+    public function setPermalink(?string $permalink): Media
+    {
+        $this->permalink = $permalink;
+        return $this;
+    }
+
 }

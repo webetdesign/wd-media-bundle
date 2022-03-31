@@ -6,6 +6,7 @@ namespace WebEtDesign\MediaBundle\Twig;
 
 use Liip\ImagineBundle\Exception\Config\Filter\NotFoundException;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Twig\Environment;
 use Twig\Error\LoaderError;
@@ -26,17 +27,20 @@ class MediaExtension extends AbstractExtension
     protected WDMediaService        $mediaService;
     protected Environment           $twig;
     private HttpClientInterface     $httpClient;
+    private UrlGeneratorInterface $urlGenerator;
 
     public function __construct(
         ParameterBagInterface $parameterBag,
         WDMediaService $mediaService,
         Environment $twig,
-        HttpClientInterface $httpClient
+        HttpClientInterface $httpClient,
+        UrlGeneratorInterface $urlGenerator
     ) {
         $this->parameterBag = $parameterBag;
         $this->mediaService = $mediaService;
         $this->twig         = $twig;
         $this->httpClient   = $httpClient;
+        $this->urlGenerator = $urlGenerator;
     }
 
     public function getFunctions(): array
@@ -47,6 +51,9 @@ class MediaExtension extends AbstractExtension
             new TwigFunction('wd_media_image_path_autoload', [$this, 'mediaImageAutoload']),
             new TwigFunction('wd_media_image_responsive', [$this, 'mediaResponsive'],
                 ['is_safe' => ['html']]),
+            new TwigFunction('wd_media_link', [$this, 'mediaLink']),
+            new TwigFunction('wd_media_formats', [$this, 'mediaFormats']),
+
         ];
     }
 
@@ -59,8 +66,13 @@ class MediaExtension extends AbstractExtension
         return [
             new TwigFilter('wd_media_path', [$this, 'media']),
             new TwigFilter('wd_media_image_path', [$this, 'mediaImage']),
+            new TwigFilter('wd_media_image_path_autoload', [$this, 'mediaImageAutoload']),
             new TwigFilter('wd_media_image_responsive', [$this, 'mediaResponsive'],
                 ['is_safe' => ['html']]),
+            new TwigFilter('wd_media_link', [$this, 'mediaLink']),
+            new TwigFilter('wd_media_formats', [$this, 'mediaFormats']),
+
+
         ];
     }
 
@@ -136,5 +148,35 @@ class MediaExtension extends AbstractExtension
             'devices' => $devices,
             'media'   => $media
         ]);
+    }
+
+    public function mediaLink (?Media $media = null, ?string $format = null): string
+    {
+        if (!$media || !$media->getId()){
+            return '';
+        }
+
+        $categories = $this->parameterBag->get('wd_media.categories');
+
+        if (!$format){
+            $format     = isset($categories[$media->getCategory()]) ? array_key_first($categories[$media->getCategory()]['formats']) : null;
+        }
+
+        return $this->urlGenerator->generate($media->getPermalink() ? 'api_dmedia_download_slug' : 'api_render_image', array_merge(
+            $media->getPermalink() ? ['permalink' => $media->getPermalink()] : ['id' => $media->getId()],
+            [
+                'format' => $format
+            ]
+        ), UrlGeneratorInterface::ABSOLUTE_URL);
+    }
+
+    public function mediaFormats (?Media $media = null ): array
+    {
+        if (!$media || !$media->getId()){
+            return [];
+        }
+        $categories = $this->parameterBag->get('wd_media.categories');
+
+        return isset($categories[$media->getCategory()]) ? array_keys($categories[$media->getCategory()]['formats']) : [];
     }
 }

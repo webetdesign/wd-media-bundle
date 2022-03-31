@@ -69,6 +69,15 @@ class Configuration implements ConfigurationInterface
                 ->scalarNode('max_width')->defaultValue(1920)->end()
                 ->scalarNode('max_height')->defaultValue(1920)->end()
                 ->scalarNode('quality')->defaultValue(75)->end()
+                ->arrayNode('file_constraints')
+                    ->addDefaultsIfNotSet()
+                    ->children()
+                        ->scalarNode('maxSize')->defaultNull()->end()
+                        ->arrayNode('mimeTypes')
+                            ->scalarPrototype()->defaultValue([])->end()
+                        ->end()
+                    ->end()
+                ->end()
             ->end()
         ;
 

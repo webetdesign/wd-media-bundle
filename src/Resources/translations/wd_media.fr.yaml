@@ -8,11 +8,20 @@ admin:
   media:
     title: Medias
 
+tab.file: Fichier
+tab.properties: Propriétés
+
 list.label_id: id
 list.label_label: Nom
 list.label_category_label: Categorie
 list.label_file_name: Nom du fichier
 list.label__action: Action
+
+form.label_id: id
+form.label_label: Nom
+form.label_file: Fichier
+form.label_category_label: Categorie
+form.label_description: Description
 
 
 filter.label_id: id

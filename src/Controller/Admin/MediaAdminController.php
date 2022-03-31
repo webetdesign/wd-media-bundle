@@ -7,6 +7,7 @@ namespace WebEtDesign\MediaBundle\Controller\Admin;
 use Doctrine\ORM\EntityManagerInterface;
 use Liip\ImagineBundle\Imagine\Cache\CacheManager;
 use Sonata\AdminBundle\Controller\CRUDController;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormRenderer;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -134,6 +135,31 @@ class MediaAdminController extends CRUDController
             'action' => 'list',
             'object' => $media,
         ]);
+    }
+
+    protected function handleXmlHttpRequestErrorResponse (Request $request, FormInterface $form): ?JsonResponse
+    {
+        if (empty(array_intersect(['application/json', '*/*'], $request->getAcceptableContentTypes()))) {
+            @trigger_error(sprintf(
+                'None of the passed values ("%s") in the "Accept" header when requesting %s %s is supported since sonata-project/admin-bundle 3.82.'
+                .' It will result in a response with the status code 406 (Not Acceptable) in 4.0. You must add "application/json".',
+                implode('", "', $request->getAcceptableContentTypes()),
+                $request->getMethod(),
+                $request->getUri()
+            ), \E_USER_DEPRECATED);
+
+            return null;
+        }
+
+        $errors = [];
+        foreach ($form->getErrors(true) as $error) {
+            $errors[$error->getOrigin()->getName()] = $error->getMessage();
+        }
+
+        return $this->renderJson([
+            'result' => 'error',
+            'errors' => $errors,
+        ], Response::HTTP_BAD_REQUEST);
     }
 
 
