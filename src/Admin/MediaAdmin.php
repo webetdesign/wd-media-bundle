@@ -9,7 +9,9 @@ use Sonata\AdminBundle\Admin\AbstractAdmin;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
+use Sonata\AdminBundle\Form\Type\Filter\ChoiceType;
 use Sonata\AdminBundle\Route\RouteCollectionInterface;
+use Sonata\DoctrineORMAdminBundle\Filter\ChoiceFilter;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
@@ -22,13 +24,12 @@ use Symfony\Component\Validator\Constraints\File;
 use Symfony\Component\Validator\Constraints\Regex;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 use WebEtDesign\MediaBundle\Entity\Media;
-use WebEtDesign\MediaBundle\Form\Type\CategoryFilterType;
 use WebEtDesign\MediaBundle\Form\Type\CategoryType;
 
 final class MediaAdmin extends AbstractAdmin
 {
 
-    private ParameterBagInterface $parameterBag;
+    private ParameterBagInterface  $parameterBag;
     private EntityManagerInterface $em;
 
     public function __construct(
@@ -37,8 +38,7 @@ final class MediaAdmin extends AbstractAdmin
         $baseControllerName,
         ParameterBagInterface $parameterBag,
         EntityManagerInterface $em
-    )
-    {
+    ) {
         $this->parameterBag = $parameterBag;
         parent::__construct($code, $class, $baseControllerName);
         $this->em = $em;
@@ -62,10 +62,10 @@ final class MediaAdmin extends AbstractAdmin
             ->add('mimeType', null, [
                 'label' => 'Type de fichier'
             ])
-            ->add('category', CategoryFilterType::class, [
-                'show_filter' => !$this->getRequest()->isXmlHttpRequest()
-            ])
-        ;
+            ->add('category', ChoiceFilter::class, [
+                'show_filter' => !$this->getRequest()->isXmlHttpRequest(),
+                'field_type'  => CategoryType::class,
+            ]);
     }
 
     protected function configureListFields(ListMapper $list): void
@@ -86,7 +86,7 @@ final class MediaAdmin extends AbstractAdmin
             ])
             ->add(ListMapper::NAME_ACTIONS, null, [
                 'actions' => [
-                    'edit' => [],
+                    'edit'   => [],
                     'delete' => [],
                 ],
             ]);
@@ -96,7 +96,7 @@ final class MediaAdmin extends AbstractAdmin
     {
         /** @var Media $subject */
         $subject = $this->getSubject();
-        $em = $this->em;
+        $em      = $this->em;
 
         $this->setFormTheme(array_merge($this->getFormTheme(), [
             '@WDMedia/admin/media/file_type.html.twig',
@@ -114,8 +114,8 @@ final class MediaAdmin extends AbstractAdmin
 
         $form
             ->add('file', FileType::class, [
-                'required' => !$this->getSubject()->getId(),
-                'attr' => [
+                'required'    => !$this->getSubject()->getId(),
+                'attr'        => [
                     'categories' => json_encode($this->parameterBag->get('wd_media.categories')),
                     'responsive' => json_encode($this->parameterBag->get('wd_media.responsive')),
                 ],
@@ -130,25 +130,30 @@ final class MediaAdmin extends AbstractAdmin
                 ->with('tab.properties', ['class' => 'col-md-6', 'box_class' => 'box box-warning'])
                 ->add('label')
                 ->add('permalink', TextType::class, [
-                    'label' => 'Raccourci URL',
-                    'required' => false,
+                    'label'       => 'Raccourci URL',
+                    'required'    => false,
                     'constraints' => [
                         new Regex([
                             'pattern' => '/^[a-z0-9]+(?:-[a-z0-9]+)*$/'
                         ]),
                         new Callback([
-                            'callback' => function ($value, ExecutionContextInterface $context) use ($em, $subject) {
-                                if (!$subject instanceof Media) return;
+                            'callback' => function ($value, ExecutionContextInterface $context) use
+                            (
+                                $em,
+                                $subject
+                            ) {
+                                if (!$subject instanceof Media) {
+                                    return;
+                                }
 
 
                                 if ($value && strlen($value) != 0) {
                                     /** @var Media $item */
                                     foreach ($em->getRepository(Media::class)->findBy(['permalink' => $value]) as $item) {
-                                        if ($item->getId() !== $subject->getId()){
+                                        if ($item->getId() !== $subject->getId()) {
                                             $context->buildViolation("Ce raccourci URL existe déjà pour le fichier : " . $item->getLabel())
                                                 ->atPath('permalink')
-                                                ->addViolation()
-                                            ;
+                                                ->addViolation();
                                         }
                                     }
                                 }
@@ -158,7 +163,7 @@ final class MediaAdmin extends AbstractAdmin
                 ])
                 ->add('description', TextareaType::class, [
                     'required' => false,
-                    'attr' => [
+                    'attr'     => [
                         'data-controller' => 'char-counter',
                     ],
                 ])
@@ -168,7 +173,7 @@ final class MediaAdmin extends AbstractAdmin
         $form->getFormBuilder()->addEventListener(FormEvents::PRE_SET_DATA,
             function (FormEvent $event) {
                 $media = $event->getData();
-                $form = $event->getForm();
+                $form  = $event->getForm();
 
                 if (!$media) {
                     return;
@@ -182,7 +187,7 @@ final class MediaAdmin extends AbstractAdmin
         $form->getFormBuilder()->addEventListener(FormEvents::PRE_SUBMIT,
             function (FormEvent $event) {
                 $media = $event->getData();
-                $form = $event->getForm();
+                $form  = $event->getForm();
 
                 if (!$media) {
                     return;
@@ -192,7 +197,7 @@ final class MediaAdmin extends AbstractAdmin
                     $form->remove('file');
                     $form
                         ->add('file', FileType::class, [
-                            'required' => !$this->getSubject()->getId(),
+                            'required'    => !$this->getSubject()->getId(),
                             'constraints' => [
                                 new File($this->getFileConstraints($media['category']))
                             ],
@@ -202,12 +207,10 @@ final class MediaAdmin extends AbstractAdmin
     }
 
 
-
-
     public function getFileConstraints(string $category)
     {
         $categories = $this->parameterBag->get('wd_media.categories');
-        $catConfig = $categories[$category] ?? null;
+        $catConfig  = $categories[$category] ?? null;
         if (!$catConfig) {
             return null;
         }
