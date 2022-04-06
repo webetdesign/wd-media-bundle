@@ -97,7 +97,7 @@ final class MediaAdmin extends AbstractAdmin
         $em = $this->em;
 
         $this->setFormTheme(array_merge($this->getFormTheme(), [
-            '@WDMedia/admin/media/file_type.html.twig',
+            '@WDMedia/admin/Media/file_type.html.twig',
         ]));
 
         if ($subject->getCategory()) {
