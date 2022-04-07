@@ -130,6 +130,7 @@ final class MediaAdmin extends AbstractAdmin
                 ->add('permalink', TextType::class, [
                     'label' => 'Raccourci URL',
                     'required' => false,
+                    'help' => 'Cette valeur permet de générer un lien sur l\'url /api/wdmedia/download/{votre-raccourci}/{format-image}',
                     'constraints' => [
                         new Regex([
                             'pattern' => '/^[a-z0-9]+(?:-[a-z0-9]+)*$/'
