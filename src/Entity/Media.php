@@ -112,6 +112,21 @@ class Media
         return $this->getLabel();
     }
 
+    public function isPicture(): bool
+    {
+        return in_array($this->getMimeType(), [
+            'image/png',
+            'image/jpeg',
+            'image/bmp',
+            'image/webp'
+        ]);
+    }
+
+    public function isGif(): bool
+    {
+        return $this->getMimeType() == 'image/gif';
+    }
+
     /**
      * @return int|null
      */

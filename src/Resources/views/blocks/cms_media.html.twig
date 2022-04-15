@@ -1,0 +1,24 @@
+{% if object is defined %}
+    {% if object.isPicture and settings.format is defined and settings.format is not empty %}
+        {% set absolute_url = settings.absolute_url is defined and settings.absolute_url is not empty ? settings.absolute_url : null %}
+        {% if settings.responsive is defined and settings.responsive is same as true %}
+            {{ object|wd_media_image_responsive(settings.format, absolute_url) }}
+        {% else %}
+            {% set device = settings.device is defined and settings.device is not empty ? settings.device : null %}
+            <img src="{{ object|wd_media_image_path(settings.format, device, absolute_url) }}"
+                 alt="{{ object.label }}"
+                 class="{{ settings.class is defined ? settings.class : '' }}"
+                    {% if settings.lazy is defined and settings.lazy is same as true %}
+                        {{ object|wd_media_image_lazy_attr(settings.format, device) }}
+                    {% endif %}
+            >
+        {% endif %}
+    {% elseif object.isGif %}
+        <img src="{{ object|wd_media_path }}"
+             alt="{{ object.label }}"
+        >
+    {% else %}
+        <a href="{{ object|wd_media_path }}">{{ object.label }}</a>
+    {% endif %}
+{% endif %}
+
