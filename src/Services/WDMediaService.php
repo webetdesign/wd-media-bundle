@@ -42,9 +42,15 @@ class WDMediaService
         $path          = $this->uploaderHelper->asset($media);
         $runtimeConfig = $this->getRuntimeConfig($media, $format, $device);
 
+        if (isset($runtimeConfig['quality'])){
+            $quality = $runtimeConfig['quality'];
+            unset($runtimeConfig['quality']);
+        }else{
+            $quality = null;
+        }
         return $this->cacheManager->getBrowserPath(
             $path,
-            'wd_media',
+            $quality ? ("wd_media_$quality") : 'wd_media',
             $runtimeConfig,
             null,
             $absoluteUrl ? UrlGeneratorInterface::ABSOLUTE_URL : UrlGeneratorInterface::RELATIVE_PATH
@@ -66,7 +72,6 @@ class WDMediaService
 
         $filters = $config['formats'][$format][$device]['filters'];
 
-
         if (($crop = $media->getCropDataForFormatDevice($format, $device))) {
             $cropFilter = [
                 'start' => [$crop['x'], $crop['y']],
@@ -74,6 +79,10 @@ class WDMediaService
             ];
 
             $filters = array_merge(['crop' => $cropFilter], $filters);
+        }
+
+        if (isset($config['quality'])){
+            $filters['quality'] = $config['quality'];
         }
 
         return $filters;

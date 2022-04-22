@@ -6,7 +6,8 @@ import {
     CropperModalFooterTpl,
     isCroppable
 } from '../templatejs/cropperModalTemplate';
-
+import toastr from 'toastr'
+import '../../node_modules/toastr/build/toastr.min.css';
 /*
  * WDMediaType js controller
  */
@@ -288,9 +289,8 @@ export default class extends Controller {
 
     link(e) {
         let btn = e.target;
-        console.log(e, btn)
         let {link} = btn.dataset;
         navigator.clipboard.writeText(link);
-        alert('Lien copié dans le presse-papier')
+        toastr.success(link,'Lien copié dans le presse-papier')
     }
 }

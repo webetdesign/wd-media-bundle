@@ -99,7 +99,7 @@ final class MediaAdmin extends AbstractAdmin
         $em      = $this->em;
 
         $this->setFormTheme(array_merge($this->getFormTheme(), [
-            '@WDMedia/admin/media/file_type.html.twig',
+            '@WDMedia/admin/Media/file_type.html.twig',
         ]));
 
         if ($subject->getCategory()) {
@@ -132,6 +132,7 @@ final class MediaAdmin extends AbstractAdmin
                 ->add('permalink', TextType::class, [
                     'label'       => 'Raccourci URL',
                     'required'    => false,
+                    'help'        => 'Cette valeur permet de générer un lien sur l\'url /api/wdmedia/download/{votre-raccourci}/{format-image}',
                     'constraints' => [
                         new Regex([
                             'pattern' => '/^[a-z0-9]+(?:-[a-z0-9]+)*$/'

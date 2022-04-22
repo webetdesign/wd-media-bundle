@@ -107,7 +107,7 @@ class ApiMediaController extends AbstractController
         $format = null
     ): RedirectResponse
     {
-        if ($format) {
+        if ($format && strpos('image', $media->getMimeType()) !== false) {
             $path = $this->mediaService->getImagePath($media, $format);
         } else {
             $path = $this->mediaService->getMediaPath($media);
@@ -134,7 +134,7 @@ class ApiMediaController extends AbstractController
               $format = null
     ): RedirectResponse
     {
-        if ($format) {
+        if ($format && strpos('image', $media->getMimeType()) !== false) {
             $path = $this->mediaService->getImagePath($media, $format);
         } else {
             $path = $this->mediaService->getMediaPath($media);

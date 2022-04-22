@@ -37,6 +37,7 @@ class Configuration implements ConfigurationInterface
                 ->arrayPrototype()
                     ->children()
                         ->scalarNode('label')->cannotBeEmpty()->end()
+                        ->scalarNode('quality')->defaultNull()->end()
                         ->append($this->addPreUploadNode())
                         ->arrayNode('formats')
                             ->isRequired()
