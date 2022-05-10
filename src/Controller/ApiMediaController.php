@@ -5,13 +5,15 @@ namespace WebEtDesign\MediaBundle\Controller;
 
 
 use Doctrine\ORM\EntityManagerInterface;
+use Liip\ImagineBundle\Exception\Config\Filter\NotFoundException;
 use Liip\ImagineBundle\Imagine\Cache\CacheManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Serializer\SerializerInterface;
 use Vich\UploaderBundle\Templating\Helper\UploaderHelper;
 use WebEtDesign\MediaBundle\Entity\Media;
 use WebEtDesign\MediaBundle\Services\WDMediaService;
@@ -19,17 +21,8 @@ use WebEtDesign\MediaBundle\Services\WDMediaService;
 class ApiMediaController extends AbstractController
 {
 
-    /**
-     * @var EntityManagerInterface
-     */
     private EntityManagerInterface $em;
-    /**
-     * @var CacheManager
-     */
     private CacheManager $cacheManager;
-    /**
-     * @var UploaderHelper
-     */
     private UploaderHelper $uploaderHelper;
     private WDMediaService $mediaService;
 
@@ -49,8 +42,9 @@ class ApiMediaController extends AbstractController
      * @param Media $media
      *
      * @Route("/api/wdmedia/{id}", name="")
+     * @return JsonResponse
      */
-    public function getMedia(Media $media)
+    public function getMedia(Media $media, SerializerInterface $serializer)
     {
         if (in_array($media->getMimeType(), ['image/png', 'image/jpeg', 'image/tiff'])) {
             $path = $this->cacheManager->getBrowserPath($this->uploaderHelper->asset($media),
@@ -58,7 +52,6 @@ class ApiMediaController extends AbstractController
         } else {
             $path = '/bundles/wdmedia/img/files/' . $media->getExtension() . '.png';
         }
-
 
         return new JsonResponse([
             'id'            => $media->getId(),
@@ -68,9 +61,9 @@ class ApiMediaController extends AbstractController
             'mimeType'      => $media->getMimeType(),
             'path'          => $path,
             'reference'     => $this->uploaderHelper->asset($media),
+            'cropData'      => json_decode($media->getCropData(), true)
         ]);
     }
-
 
     /**
      * @param Request $request
@@ -78,6 +71,7 @@ class ApiMediaController extends AbstractController
      *
      * @Route("/api/wdmedia/setcrop/{id}", name="api_wdmedia_setcrop", methods={"POST"})
      *
+     * @return JsonResponse
      */
     public function patch(Request $request, Media $media)
     {
@@ -101,15 +95,46 @@ class ApiMediaController extends AbstractController
     /**
      * @param Media $media
      * @param null $format
+     * @return RedirectResponse
+     * @throws NotFoundException
      * @Route("/api/wdmedia/render/{id}", name="api_render_media", methods={"GET"})
      * @Route("/api/wdmedia/render/{id}/{format}", name="api_render_image", methods={"GET"})
+     *
      * @ParamConverter("media", class="WebEtDesign\MediaBundle\Entity\Media", options={"mapping": {"id": "id"}})
      */
     public function renderMedia(
         Media $media,
         $format = null
-    ) {
-        if ($format) {
+    ): RedirectResponse
+    {
+        if ($format && strpos('image', $media->getMimeType()) !== false) {
+            $path = $this->mediaService->getImagePath($media, $format);
+        } else {
+            $path = $this->mediaService->getMediaPath($media);
+        }
+
+        if (!$path) {
+            throw new NotFoundHttpException();
+        }
+
+        return $this->redirect($path);
+    }
+
+    /**
+     * @param Media $media
+     * @param null $format
+     * @return RedirectResponse
+     * @throws NotFoundException
+     * @Route("/api/wdmedia/download/{permalink}/{format}", name="api_dmedia_download_slug")
+     *
+     * @ParamConverter("media", class="WebEtDesign\MediaBundle\Entity\Media", options={"mapping": {"permalink": "permalink"}})
+     */
+    public function renderMediaPermalink(
+        Media $media,
+              $format = null
+    ): RedirectResponse
+    {
+        if ($format && strpos('image', $media->getMimeType()) !== false) {
             $path = $this->mediaService->getImagePath($media, $format);
         } else {
             $path = $this->mediaService->getMediaPath($media);

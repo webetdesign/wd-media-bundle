@@ -85,7 +85,10 @@ class MediaLazyExtension extends AbstractExtension
 
         $blur = $this->blurHash->createDataUriThumbnail($originale, $size[0] / 10, $size[1] / 10);
 
-        return sprintf('src="%s" data-hd-src="%s" data-controller="symfony--ux-lazy-image--lazy-image"',
+        return sprintf('src="%s"
+                        data-controller="symfony--ux-lazy-image--lazy-image" 
+                        data-symfony--ux-lazy-image--lazy-image-src-value="%s"
+        ',
             $blur, $path);
     }
 }

@@ -23,6 +23,7 @@
     "axios": "^0.21.1",
     "bootstrap": "3.4.1",
     "cropperjs": "^1.5.11",
-    "jquery": "2.2.4"
+    "jquery": "2.2.4",
+    "toastr": "^2.1.4"
   }
 }

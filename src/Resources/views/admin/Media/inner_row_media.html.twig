@@ -3,7 +3,6 @@
 {% endif %}
 
 <td class="sonata-ba-list-field sonata-ba-list-field-inline-fields"
-    colspan="{{ admin.list.elements|length - (admin.list.has(constant('Sonata\\AdminBundle\\Datagrid\\ListMapper::NAME_ACTIONS')) + admin.list.has(constant('Sonata\\AdminBundle\\Datagrid\\ListMapper::NAME_BATCH'))) }}"
     objectId="{{ admin.id(object) }}">
 
     <div class="col-sm-12 media__inner-row">
@@ -11,7 +10,7 @@
             {% if admin.isGranted('EDIT', object) and admin.hasRoute('edit') %}
                 <a href="{{ admin.generateUrl('edit', {'id' : object|sonata_urlsafeid }) }}" style="float: left; margin-right: 6px;">
                     {% if object.mimeType not in ['image/gif',"image/ief","image/png","image/jpeg","image/pipeg","image/svg+xml","image/tiff" ] %}
-                        <img src="{{ asset('bundles/wdmedia/img/files/' ~ object.extension ~ '.png') }}" alt="{{ object.extension }}" width="90">
+                        <img src="{{ asset('bundles/wdmedia/img/files/' ~ object.extension ~ '.png') }}" alt="{{ object.label }}" width="90">
                     {% else %}
                         <img src="{{ vich_uploader_asset(object) | imagine_filter('wd_media_admin_list') }}" alt="{{ object.label }}">
                     {% endif %}
@@ -31,7 +30,7 @@
                 <strong>{{ object.label }}</strong>
             {% endif %}
             <p>
-                Catégorie : {{ object.categoryLabel }} <br>
+                Catégorie : {{ object.category }}<br>
                 MimeType : {{ object.mimeType }}
             </p>
         </div>
@@ -43,6 +42,11 @@
     </div>
 
 </td>
+
+<td class="sonata-ba-list-field sonata-ba-list-field-text" objectid="{{ admin.id(object) }}">
+    <a href="{{ wd_media_link(object) }}" class="disable-catch" target="_blank">Consulter</a>
+</td>
+<td class="sonata-ba-list-field sonata-ba-list-field-text" objectid="{{ admin.id(object) }}">{{ object.createdAt|date('d/m/Y H:i') }}</td>
 
 {% if admin.list.has(constant('Sonata\\AdminBundle\\Datagrid\\ListMapper::NAME_ACTIONS')) and not app.request.isXmlHttpRequest %}
     {{ object|render_list_element(admin.list[constant('Sonata\\AdminBundle\\Datagrid\\ListMapper::NAME_ACTIONS')]) }}

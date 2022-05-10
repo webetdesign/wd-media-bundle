@@ -7,25 +7,19 @@ namespace WebEtDesign\MediaBundle\Controller\Admin;
 use Doctrine\ORM\EntityManagerInterface;
 use Liip\ImagineBundle\Imagine\Cache\CacheManager;
 use Sonata\AdminBundle\Controller\CRUDController;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormRenderer;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Twig\Error\RuntimeError;
 use Vich\UploaderBundle\Templating\Helper\UploaderHelper;
 use WebEtDesign\MediaBundle\Entity\Media;
 use const E_USER_DEPRECATED;
 
 class MediaAdminController extends CRUDController
 {
-    /**
-     * @var CacheManager
-     */
     private CacheManager $cacheManager;
-    /**
-     * @var UploaderHelper
-     */
-    private UploaderHelper $uploaderHelper;
+    private UploaderHelper         $uploaderHelper;
     private EntityManagerInterface $em;
 
     public function __construct(
@@ -43,11 +37,12 @@ class MediaAdminController extends CRUDController
     /**
      * @inheritDoc
      */
-    protected function preCreate(Request $request, $object)
+    protected function preCreate(Request $request, $object): ?Response
     {
         if ($request->query->has('category')) {
             $object->setCategory($request->query->get('category'));
         }
+        return null;
     }
 
 
@@ -96,7 +91,8 @@ class MediaAdminController extends CRUDController
     }
 
     /**
-     * @throws RuntimeError
+     * @param Request $request
+     * @return Response
      */
     public function ckeditorBrowserAction(Request $request): Response
     {
@@ -114,7 +110,7 @@ class MediaAdminController extends CRUDController
         $twig = $this->get('twig');
         $twig->getRuntime(FormRenderer::class)->setTheme($formView, $this->admin->getFilterTheme());
 
-        return $this->renderWithExtraParams($this->admin->getTemplate('browser'), [
+        return $this->renderWithExtraParams($this->admin->getTemplateRegistry()->getTemplate('browser'), [
             'action' => 'browser',
             'form' => $formView,
             'datagrid' => $datagrid,

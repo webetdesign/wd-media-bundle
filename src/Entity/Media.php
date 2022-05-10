@@ -87,6 +87,7 @@ class Media
      * @var string|null
      *
      * @ORM\Column(type="text", nullable=true)
+     * @Groups({"media"})
      */
     private ?string $cropData = null;
 
@@ -98,9 +99,32 @@ class Media
      */
     private ?string $description = null;
 
+    /**
+     * @var null|string
+     *
+     * @ORM\Column(type="text", nullable=true)
+     * @Groups({"media"})
+     */
+    private ?string $permalink = '';
+
     public function __toString()
     {
         return $this->getLabel();
+    }
+
+    public function isPicture(): bool
+    {
+        return in_array($this->getMimeType(), [
+            'image/png',
+            'image/jpeg',
+            'image/bmp',
+            'image/webp'
+        ]);
+    }
+
+    public function isGif(): bool
+    {
+        return $this->getMimeType() == 'image/gif';
     }
 
     /**
@@ -240,6 +264,10 @@ class Media
      */
     public function getExtension(): ?string
     {
+        if (!$this->extension && $this->mimeType){
+            return strrev(substr(strrev($this->mimeType), 0,strpos(strrev($this->mimeType), '/')));
+        }
+
         return $this->extension;
     }
 
@@ -288,4 +316,23 @@ class Media
         $this->description = $description;
         return $this;
     }
+
+    /**
+     * @return string|null
+     */
+    public function getPermalink(): ?string
+    {
+        return $this->permalink;
+    }
+
+    /**
+     * @param null|string $permalink
+     * @return Media
+     */
+    public function setPermalink(?string $permalink): Media
+    {
+        $this->permalink = $permalink;
+        return $this;
+    }
+
 }

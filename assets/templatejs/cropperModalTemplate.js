@@ -16,7 +16,7 @@ function tabContentTpl(prefix_id, format, category, media, config, first) {
 
   return `
 <div id="${id}" class="tab-pane fade ${active}">
-    <div data-controller="cropper_controller" data-category="${category}" data-format="${format}" data-config='${configString}'>
+    <div data-controller="cropper_controller" data-category="${category}" data-media='${JSON.stringify(media)}' data-format="${format}" data-config='${configString}'>
         <input type="hidden" data-format="${format}">
         <div class="img-container">
             <img src="${media.reference}" alt="${media.label}">
@@ -83,7 +83,6 @@ export function CropperModalFooterTpl() {
 }
 
 export function isCroppable(config) {
-  console.log(config);
   let ret = false;
 
   Object.keys(config)
