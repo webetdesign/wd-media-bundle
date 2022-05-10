@@ -26,17 +26,18 @@ class MediaAdminController extends CRUDController
     /**
      * @var UploaderHelper
      */
-    private UploaderHelper         $uploaderHelper;
+    private UploaderHelper $uploaderHelper;
     private EntityManagerInterface $em;
 
     public function __construct(
-        CacheManager $cacheManager,
-        UploaderHelper $uploaderHelper,
+        CacheManager           $cacheManager,
+        UploaderHelper         $uploaderHelper,
         EntityManagerInterface $entityManager
-    ) {
-        $this->cacheManager   = $cacheManager;
+    )
+    {
+        $this->cacheManager = $cacheManager;
         $this->uploaderHelper = $uploaderHelper;
-        $this->em             = $entityManager;
+        $this->em = $entityManager;
     }
 
 
@@ -59,8 +60,9 @@ class MediaAdminController extends CRUDController
      */
     protected function handleXmlHttpRequestSuccessResponse(
         Request $request,
-        object $object
-    ): JsonResponse {
+        object  $object
+    ): JsonResponse
+    {
         if (empty(array_intersect(['application/json', '*/*'],
             $request->getAcceptableContentTypes()))) {
             @trigger_error(sprintf(
@@ -80,16 +82,16 @@ class MediaAdminController extends CRUDController
         }
 
         return $this->renderJson([
-            'result'     => 'ok',
-            'media'      => [
-                'id'            => $object->getId(),
-                'label'         => $object->getLabel(),
-                'category'      => $object->getCategory(),
+            'result' => 'ok',
+            'media' => [
+                'id' => $object->getId(),
+                'label' => $object->getLabel(),
+                'category' => $object->getCategory(),
                 'categoryLabel' => $object->getCategoryLabel(),
-                'mimeType'      => $object->getMimeType(),
-                'path'          => $path,
+                'mimeType' => $object->getMimeType(),
+                'path' => $path,
             ],
-            'objectId'   => $this->admin->getNormalizedIdentifier($object),
+            'objectId' => $this->admin->getNormalizedIdentifier($object),
             'objectName' => $this->escapeHtml($this->admin->toString($object)),
         ]);
     }
@@ -114,8 +116,8 @@ class MediaAdminController extends CRUDController
         $twig->getRuntime(FormRenderer::class)->setTheme($formView, $this->admin->getFilterTheme());
 
         return $this->renderWithExtraParams($this->admin->getTemplate('browser'), [
-            'action'   => 'browser',
-            'form'     => $formView,
+            'action' => 'browser',
+            'form' => $formView,
             'datagrid' => $datagrid,
         ]);
     }
@@ -125,7 +127,7 @@ class MediaAdminController extends CRUDController
 
         $this->admin->checkAccess('create');
 
-        $file     = $request->files->get('upload');
+        $file = $request->files->get('upload');
         $category = $request->get('category');
 
         $media = new Media();
@@ -136,18 +138,20 @@ class MediaAdminController extends CRUDController
         $this->em->persist($media);
         $this->em->flush();
 
-        return $this->renderWithExtraParams($this->admin->getTemplate('upload'), [
-            'action' => 'list',
-            'object' => $media,
-        ]);
+        return $this->json([
+                "uploaded" => 1,
+                "fileName" => $media->getFileName(),
+                "url" => $this->uploaderHelper->asset($media)
+            ]
+        );
     }
 
-    protected function handleXmlHttpRequestErrorResponse (Request $request, FormInterface $form): ?JsonResponse
+    protected function handleXmlHttpRequestErrorResponse(Request $request, FormInterface $form): ?JsonResponse
     {
         if (empty(array_intersect(['application/json', '*/*'], $request->getAcceptableContentTypes()))) {
             @trigger_error(sprintf(
                 'None of the passed values ("%s") in the "Accept" header when requesting %s %s is supported since sonata-project/admin-bundle 3.82.'
-                .' It will result in a response with the status code 406 (Not Acceptable) in 4.0. You must add "application/json".',
+                . ' It will result in a response with the status code 406 (Not Acceptable) in 4.0. You must add "application/json".',
                 implode('", "', $request->getAcceptableContentTypes()),
                 $request->getMethod(),
                 $request->getUri()
