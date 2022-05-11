@@ -124,7 +124,15 @@ class Media
 
     public function isGif(): bool
     {
-        return $this->getMimeType() == 'image/gif';
+        return $this->getMimeType() === 'image/gif';
+    }
+
+    public function isSvg(): bool
+    {
+        return in_array($this->getMimeType(), [
+            'image/svg+xml',
+            'application/svg+xml',
+        ]);
     }
 
     /**
