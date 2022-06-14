@@ -5,15 +5,17 @@
             {{ object|wd_media_image_responsive(settings.format, absolute_url) }}
         {% else %}
             {% set device = settings.device is defined and settings.device is not empty ? settings.device : null %}
-            <img src="{{ object|wd_media_image_path(settings.format, device, absolute_url) }}"
+            <img
                  alt="{{ object.label }}"
                  class="{{ settings.class is defined ? settings.class : '' }}"
             {% if settings.lazy is defined and settings.lazy is same as true %}
                 {{ object|wd_media_image_lazy_attr(settings.format, device) }}
+            {% else %}
+                src="{{ object|wd_media_image_path(settings.format, device, absolute_url) }}"
             {% endif %}
             {{ settings.width is defined ? 'width='~ settings.width : '' }}
             {{ settings.height is defined ? 'height='~ settings.height: '' }}
-
+>
         {% endif %}
     {% elseif object.isGif or object.isSvg %}
         <img src="{{ object|wd_media_path }}"
