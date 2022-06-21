@@ -6,7 +6,7 @@
         {% else %}
             {% set device = settings.device is defined and settings.device is not empty ? settings.device : null %}
             <img
-                 alt="{{ object.label }}"
+                 alt="{{ object.alt }}"
                  class="{{ settings.class is defined ? settings.class : '' }}"
             {% if settings.lazy is defined and settings.lazy is same as true %}
                 {{ object|wd_media_image_lazy_attr(settings.format, device) }}
@@ -19,7 +19,7 @@
         {% endif %}
     {% elseif object.isGif or object.isSvg %}
         <img src="{{ object|wd_media_path }}"
-             alt="{{ object.label }}"
+             alt="{{ object.alt }}"
                 {{ settings.width is defined ? 'width='~ settings.width : '' }}
                 {{ settings.height is defined ? 'height='~ settings.height : '' }}
                 {{ settings.class is defined ? 'class='~ settings.class : '' }}

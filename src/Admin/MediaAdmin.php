@@ -129,6 +129,7 @@ final class MediaAdmin extends AbstractAdmin
             $form
                 ->with('tab.properties', ['class' => 'col-md-6', 'box_class' => 'box box-warning'])
                 ->add('label')
+                ->add('alt')
                 ->add('permalink', TextType::class, [
                     'label'       => 'Raccourci URL',
                     'required'    => false,

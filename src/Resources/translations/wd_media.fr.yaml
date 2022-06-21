@@ -19,6 +19,7 @@ list.label__action: Action
 
 form.label_id: id
 form.label_label: Nom
+form.label_alt: Balise alt
 form.label_file: Fichier
 form.label_category_label: Categorie
 form.label_description: Description

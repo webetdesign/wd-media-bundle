@@ -10,7 +10,7 @@
         <div class="image">
             {% if data %}
                 {% if data.mimeType not in ["image/png","image/jpeg","image/pipeg","image/tiff" ] %}
-                    <a target="_blank" href="{{ vich_uploader_asset(data)}}">{{ data.label }}</a>
+                    <a target="_blank" href="{{ vich_uploader_asset(data) }}">{{ data.label }}</a>
                 {% else %}
                     <img src="{{ vich_uploader_asset(data) | imagine_filter('wd_media_admin_type') }}"
                          alt="{{ data.label }}">
@@ -19,30 +19,40 @@
                 Aucun media
             {% endif %}
         </div>
-        <div class="btn-group d-flex">
+        <div class="media-btn {% if data %}btn-group-vertical{% else %} btn-group {% endif %}" data-media-target="btnGroup">
             {% if data %}
-                {% include '@WDMedia/admin/Media/copy_dropdown.html.twig' with {media: data}%}
+                {% include '@WDMedia/admin/Media/copy_dropdown.html.twig' with {media: data} %}
             {% endif %}
             {% if form.vars.allow_add %}
-                <button type="button" class="btn btn-default js-btn-add"><i class="fa fa-plus"></i></button>
+                <button type="button" class="btn btn-default js-btn-add" data-media-target="btnAdd">
+                    <i class="fa fa-plus"></i>
+                </button>
             {% endif %}
             {% if form.vars.allow_edit %}
-                <button type="button" class="btn btn-default js-btn-edit {% if data is null %}d-none{% endif %}"><i
+                <button type="button" class="btn btn-default js-btn-edit {% if data is null %}d-none{% endif %}"
+                        data-media-target="btnEdit">
+                    <i
                             class="fa fa-pencil"></i></button>
             {% endif %}
             {% if form.vars.allow_list %}
-                <button type="button" class="btn btn-info js-btn-list"><i class="fa fa-list"></i></button>
+                <button type="button" class="btn btn-info js-btn-list"
+                        data-media-target="btnList"
+                ><i class="fa fa-list"></i>
+                </button>
             {% endif %}
             {% if form.vars.allow_delete %}
-                <button type="button" class="btn btn-danger js-btn-delete {% if data is null %}d-none{% endif %}"><i
+                <button type="button" class="btn btn-danger js-btn-delete {% if data is null %}d-none{% endif %}"
+                        data-media-target="btnDelete"
+                >
+                    <i
                             class="fa fa-trash"></i></button>
             {% endif %}
+            {% if form.vars.allow_crop %}
+                <button type="button" class="btn btn-default js-btn-crop d-none"
+                        data-media-target="btnCrop"
+                ><i class="fa fa-crop"></i></button>
+            {% endif %}
         </div>
-        {% if form.vars.allow_crop %}
-            <div class="btn-group">
-                <button type="button" class="btn btn-default js-btn-crop d-none"><i class="fa fa-crop"></i></button>
-            </div>
-        {% endif %}
     </div>
 
 
