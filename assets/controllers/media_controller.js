@@ -1,6 +1,4 @@
 import { Controller } from 'stimulus';
-import 'jquery';
-import 'bootstrap';
 import axios from 'axios';
 import BS3Modal from '../js/BS3Modal';
 import {
@@ -17,9 +15,6 @@ export default class extends Controller {
   static targets = ['btnGroup', 'btnAdd', 'btnEdit', 'btnList', 'btnDelete', 'btnCrop'];
 
   async connect() {
-    //boostrap 3
-    $('.dropdown-toggle').dropdown();
-
     this.config = {
       responsive: JSON.parse(this.context.element.dataset.configResponsive),
       categories: JSON.parse(this.context.element.dataset.configCategories),
