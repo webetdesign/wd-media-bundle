@@ -20,8 +20,10 @@
             {% endif %}
         </div>
 
-        {% if media.mimeType not in ["image/png","image/jpeg","image/pipeg","image/tiff" ] %}
+        {% if media.mimeType not in ["image/png","image/jpeg","image/pipeg","image/tiff", 'image/svg+xml' ] %}
             <a target="_blank" href="{{ vich_uploader_asset(media) }}">{{ media.label }}</a>
+        {% elseif media.mimeType == 'image/svg+xml' %}
+            <img src="{{ vich_uploader_asset(media) }}" alt="" width="100px">
         {% else %}
             <img src="{{ vich_uploader_asset(media) | imagine_filter('wd_media_admin_type') }}"
                  alt="{{ media.label }}">

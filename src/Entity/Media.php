@@ -107,9 +107,40 @@ class Media
      */
     private ?string $permalink = '';
 
+    /**
+     * @var null|string
+     *
+     * @ORM\Column(type="string", nullable=true)
+     * @Groups({"media"})
+     */
+    protected ?string $alt = null;
+
     public function __toString()
     {
         return $this->getLabel();
+    }
+
+    public function isPicture(): bool
+    {
+        return in_array($this->getMimeType(), [
+            'image/png',
+            'image/jpeg',
+            'image/bmp',
+            'image/webp'
+        ]);
+    }
+
+    public function isGif(): bool
+    {
+        return $this->getMimeType() === 'image/gif';
+    }
+
+    public function isSvg(): bool
+    {
+        return in_array($this->getMimeType(), [
+            'image/svg+xml',
+            'application/svg+xml',
+        ]);
     }
 
     /**
@@ -317,6 +348,24 @@ class Media
     public function setPermalink(?string $permalink): Media
     {
         $this->permalink = $permalink;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getAlt(): ?string
+    {
+        return !empty($this->alt) ? $this->alt : $this->getLabel();
+    }
+
+    /**
+     * @param string|null $alt
+     * @return Media
+     */
+    public function setAlt(?string $alt): Media
+    {
+        $this->alt = $alt;
         return $this;
     }
 
