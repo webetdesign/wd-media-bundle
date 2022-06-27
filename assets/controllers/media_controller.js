@@ -39,8 +39,6 @@ export default class extends Controller {
       links: this.context.element.querySelectorAll('.js-btn-link'),
     };
 
-    console.log(this.btn);
-
     this.btn.add ? this.btn.add.addEventListener('click', e => this.add(e)) : null;
     this.btn.edit ? this.btn.edit.addEventListener('click', e => this.edit(e)) : null;
     this.btn.list ? this.btn.list.addEventListener('click', e => this.list(e)) : null;
