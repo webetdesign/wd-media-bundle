@@ -8,6 +8,7 @@ import {
 } from '../templatejs/cropperModalTemplate';
 import toastr from 'toastr';
 import '../../node_modules/toastr/build/toastr.min.css';
+
 /*
  * WDMediaType js controller
  */

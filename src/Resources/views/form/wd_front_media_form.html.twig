@@ -1,0 +1,25 @@
+{% block wd_front_media_row %}
+     {{ form_widget(form) }}
+{% endblock %}
+
+{% block wd_front_media_widget %}
+    <div data-controller="front-media"
+         data-front-media-category-value="{{ form.category.vars.value }}"
+         data-front-media-havefile-value="{{ form.parent.vars.data.media is not null ? 1 : 0 }}"
+         data-front-media-mediaid-value="{{ form.parent.vars.data.media is not null ? form.parent.vars.data.media.id : "" }}"
+         data-front-media-allowedit-value="{{ form.vars.allow_edit ? 1 : 0 }}"
+         data-front-media-allowcrop-value="{{ form.vars.allow_crop ? 1 : 0 }}"
+         data-front-media-allowdownload-value="{{ form.vars.allow_download ? 1 : 0 }}"
+         data-front-media-allowdelete-value="{{ form.vars.allow_delete ? 1 : 0 }}"
+    >
+        {{ form_row(form.category) }}
+        {{ form_row(form.file) }}
+        <div class="d-flex">
+            <button class="btn btn-success rounded-0" type="button" data-front-media-target="addBtn">+</button>
+            <button class="btn btn-primary rounded-0" type="button" data-front-media-target="cropBtn">◰</button>
+            <button class="btn btn-secondary rounded-0" type="button" data-front-media-target="downloadBtn">⇓</button>
+            <button class="btn btn-warning rounded-0" type="button" data-front-media-target="editBtn">✎</button>
+            <button class="btn btn-danger rounded-0" type="button" data-front-media-target="deleteBtn">✕</button>
+        </div>
+    </div>
+{% endblock %}

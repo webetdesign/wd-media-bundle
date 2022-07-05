@@ -13,8 +13,6 @@
     "symfony/http-client": "^4.4|^5.0",
     "vich/uploader-bundle": "^1.17.0"
   },
-  "require-dev": {
-  },
   "autoload": {
     "psr-4": {
       "WebEtDesign\\MediaBundle\\": "src"

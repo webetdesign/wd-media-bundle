@@ -55,7 +55,7 @@ class WDMediaType extends AbstractType
         ]);
 
         $resolver->setRequired([
-            'category',
+            'category'
         ]);
     }
 
@@ -71,6 +71,4 @@ class WDMediaType extends AbstractType
     {
         return 'wd_media';
     }
-
-
 }
