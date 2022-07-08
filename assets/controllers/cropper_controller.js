@@ -80,7 +80,15 @@ export default class extends Controller {
       crop(event) {
         if (ready) {
           const crop = JSON.parse(vm.input.value);
-          crop[vm.device] = event.detail;
+          const data = event.detail;
+          if (data.x < 0) {
+            data.x = 0
+          }
+          if (data.y < 0) {
+            data.y = 0
+          }
+
+          crop[vm.device] = data;
           vm.input.value = JSON.stringify(crop);
         }
       },

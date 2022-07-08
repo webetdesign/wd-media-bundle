@@ -13,6 +13,7 @@ import '../../node_modules/toastr/build/toastr.min.css';
  */
 export default class extends Controller {
   static targets = ['btnGroup', 'btnAdd', 'btnEdit', 'btnList', 'btnDelete', 'btnCrop'];
+  modal = null;
 
   async connect() {
     this.config = {
@@ -52,6 +53,7 @@ export default class extends Controller {
   }
 
   add(e) {
+    this.destroyModal();
     this.modal = new BS3Modal(this.id + '_modal', `<h3> New media in ${this.config.categories[this.category].label} category </h3>`);
 
     const queryString = new URLSearchParams();
@@ -71,6 +73,7 @@ export default class extends Controller {
   }
 
   edit(e) {
+    this.destroyModal();
     this.modal = new BS3Modal(this.id + '_modal', `<h3>Edition of ${this.media.label}</h3>`);
 
     axios.get('/admin/webetdesign/media/media/' + this.mediaId + '/edit', {
@@ -87,6 +90,7 @@ export default class extends Controller {
   }
 
   list(e) {
+    this.destroyModal();
     this.modal = new BS3Modal(this.id + '_modal', `<h3>List of media in the ${this.config.categories[this.category].label} category</h3>`);
 
     const filters = 'filter%5Bcategory%5D%5Btype%5D=3&filter%5Bcategory%5D%5Bvalue%5D=' + this.category;
@@ -112,7 +116,7 @@ export default class extends Controller {
                   const media = await this.getMedia(td.getAttribute('objectId'));
                   this.updateMedia(media);
                   this.modal.hide();
-                  this.modal.destroy();
+                  this.destroyModal();
                 });
               });
           });
@@ -156,7 +160,7 @@ export default class extends Controller {
         this.updateMedia(response.data.media);
 
         this.modal.hide();
-        this.modal.destroy();
+        this.destroyModal();
 
       })
       .catch(error => {
@@ -253,6 +257,7 @@ export default class extends Controller {
 
     const footer = CropperModalFooterTpl();
 
+    this.destroyModal();
     this.modal = new BS3Modal(this.id + '_modal', 'Crop ');
     this.modal.setBody(body);
     this.modal.setFooter(footer);
@@ -263,7 +268,7 @@ export default class extends Controller {
 
         if (ret) {
           this.modal.hide();
-          this.modal.destroy();
+          this.destroyModal();
         }
 
       });
@@ -315,5 +320,12 @@ export default class extends Controller {
     let { link } = btn.dataset;
     navigator.clipboard.writeText(link);
     toastr.success(link, 'Lien copié dans le presse-papier');
+  }
+
+  destroyModal() {
+    if (this.modal !== null) {
+      this.modal.destroy();
+      this.modal = null;
+    }
   }
 }
