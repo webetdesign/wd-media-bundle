@@ -123,7 +123,7 @@
                                         {% endblock %}
 
                                         {% block num_results %}
-                                            {% transchoice admin.datagrid.pager.nbresults with {'%count%': admin.datagrid.pager.nbresults} from 'SonataAdminBundle' %}list_results_count{% endtranschoice %}
+                                            {% trans with {'%count%': admin.datagrid.pager.countResults()} from 'SonataAdminBundle' %}list_results_count{% endtrans %}
                                             &nbsp;-&nbsp;
                                         {% endblock %}
 
