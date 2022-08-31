@@ -28,3 +28,6 @@ form.label_description: Description
 filter.label_id: id
 filter.label_label: Nom
 filter.label_category: Categorie
+
+form.group_tab_file: Fichier
+form.group_tab_properties: Propriétés du fichier
