@@ -180,7 +180,6 @@ export default class extends Controller {
       img.src = media.path;
       img.alt = media.label;
       if (media.mimeType === 'image/svg+xml') {
-        console.log(media);
         img.style.width = '150px';
       }
       this.mediaElement.innerHTML = '';
