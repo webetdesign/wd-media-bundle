@@ -46,7 +46,9 @@ class ApiMediaController extends AbstractController
      */
     public function getMedia(Media $media, SerializerInterface $serializer)
     {
-        if (in_array($media->getMimeType(), ['image/png', 'image/jpeg', 'image/tiff'])) {
+        if ($media->getMimeType() == 'image/svg+xml') {
+            $path = $this->uploaderHelper->asset($media);
+        } elseif (in_array($media->getMimeType(), ['image/png', 'image/jpeg', 'image/tiff'])) {
             $path = $this->cacheManager->getBrowserPath($this->uploaderHelper->asset($media),
                 'wd_media_admin_type');
         } else {
