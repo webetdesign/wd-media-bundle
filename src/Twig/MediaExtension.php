@@ -97,25 +97,13 @@ class MediaExtension extends AbstractExtension
         return $this->mediaService->getImagePath($media, $format, $device, $absoluteUrl);
     }
 
-    /**
-     * @throws NotFoundException
-     */
-    public function mediaImageAutoload(?Media $media, $format, $device = null, $absoluteUrl = false): ?string
+    public function mediaImageAutoload(?Media $media, $format, $device = null, $useWebp = true): ?string
     {
         if (!$media) {
             return null;
         }
 
-        $path = $this->mediaService->getImagePath($media, $format, $device, $absoluteUrl);
-        if (preg_match('/\/resolve\//', $path)) {
-            $response = $this->httpClient->request('GET', $path);
-            if ($response->getStatusCode() !== 200) {
-                return null;
-            }
-            return $this->mediaService->getImagePath($media, $format, $device, $absoluteUrl);
-        }
-
-        return $path;
+        return $this->mediaService->getImagePathForSeo($media, $format, $device, $useWebp);
     }
 
     /**

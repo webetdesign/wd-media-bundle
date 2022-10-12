@@ -7,6 +7,7 @@ namespace WebEtDesign\MediaBundle\Services;
 use Exception;
 use Liip\ImagineBundle\Exception\Config\Filter\NotFoundException;
 use Liip\ImagineBundle\Imagine\Cache\CacheManager;
+use Liip\ImagineBundle\Service\FilterService;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Vich\UploaderBundle\Templating\Helper\UploaderHelper;
@@ -18,15 +19,18 @@ class WDMediaService
     private ParameterBagInterface $parameterBag;
     private UploaderHelper        $uploaderHelper;
     private CacheManager          $cacheManager;
+    private FilterService         $filterService;
 
     public function __construct(
         ParameterBagInterface $parameterBag,
         UploaderHelper $uploaderHelper,
-        CacheManager $cacheManager
+        CacheManager $cacheManager,
+        FilterService $filterService,
     ) {
         $this->parameterBag   = $parameterBag;
         $this->uploaderHelper = $uploaderHelper;
         $this->cacheManager   = $cacheManager;
+        $this->filterService  = $filterService;
     }
 
     public function getMediaPath(Media $media): ?string
@@ -42,19 +46,44 @@ class WDMediaService
         $path          = $this->uploaderHelper->asset($media);
         $runtimeConfig = $this->getRuntimeConfig($media, $format, $device);
 
-        if (isset($runtimeConfig['quality'])){
+        if (isset($runtimeConfig['quality'])) {
             $quality = $runtimeConfig['quality'];
             unset($runtimeConfig['quality']);
-        }else{
+        } else {
             $quality = null;
         }
+
+        $filter = $quality ? ("wd_media_$quality") : 'wd_media';
+
         return $this->cacheManager->getBrowserPath(
             $path,
-            $quality ? ("wd_media_$quality") : 'wd_media',
+            $filter,
             $runtimeConfig,
             null,
             $absoluteUrl ? UrlGeneratorInterface::ABSOLUTE_URL : UrlGeneratorInterface::RELATIVE_PATH
         );
+    }
+
+    public function getImagePathForSeo(Media $media, $format, $device = null, $useWep = true): ?string
+    {
+        $path          = $this->uploaderHelper->asset($media);
+        $runtimeConfig = $this->getRuntimeConfig($media, $format, $device);
+
+        if (isset($runtimeConfig['quality'])) {
+            $quality = $runtimeConfig['quality'];
+            unset($runtimeConfig['quality']);
+        } else {
+            $quality = null;
+        }
+
+        $filter = $quality ? ("wd_media_$quality") : 'wd_media';
+
+        // Pour ne pas obtenir l'url vers le controller de resolve, qui ne sera pas être suivie par les crawlers,
+        // on retourne direct le lien de la ressource en cache.
+        // Problème avec cette solution si la ressource n'existe pas en cache, elle sera créer immédiatement avant que la réponse soit envoyé au client
+        // cela peut causer des lenteurs au chargement de la page.
+
+        return $this->filterService->getUrlOfFilteredImageWithRuntimeFilters($path, $filter, $runtimeConfig, null, $useWep);
     }
 
     protected function getRuntimeConfig(Media $media, $format, $device = null): ?array
@@ -81,7 +110,7 @@ class WDMediaService
             $filters = array_merge(['crop' => $cropFilter], $filters);
         }
 
-        if (isset($config['quality'])){
+        if (isset($config['quality'])) {
             $filters['quality'] = $config['quality'];
         }
 
