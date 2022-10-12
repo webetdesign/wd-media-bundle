@@ -68,7 +68,9 @@ class MediaAdminController extends CRUDController
             ), E_USER_DEPRECATED);
         }
 
-        if (in_array($object->getMimeType(), ['image/png', 'image/jpeg', 'image/tiff'])) {
+        if ($object->getMimeType() == 'image/svg+xml') {
+            $path = $this->uploaderHelper->asset($object);
+        } elseif (in_array($object->getMimeType(), ['image/png', 'image/jpeg', 'image/tiff'])) {
             $path = $this->cacheManager->getBrowserPath($this->uploaderHelper->asset($object),
                 'wd_media_admin_type');
         } else {

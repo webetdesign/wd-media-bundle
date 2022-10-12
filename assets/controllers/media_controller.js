@@ -179,12 +179,13 @@ export default class extends Controller {
       const img = document.createElement('img');
       img.src = media.path;
       img.alt = media.label;
+      if (media.mimeType === 'image/svg+xml') {
+        img.style.width = '150px';
+      }
       this.mediaElement.innerHTML = '';
       this.mediaElement.appendChild(img);
-
       this.input.value = media.id;
       this.mediaId = media.id;
-
       this.btn.edit.classList.remove('d-none');
       this.btn.delete.classList.remove('d-none');
       this.btnGroupTarget.classList.remove('btn-group')

@@ -9,7 +9,9 @@
         <input type="hidden" name="{{ full_name }}" value="{{ value }}">
         <div class="image">
             {% if data %}
-                {% if data.mimeType not in ["image/png","image/jpeg","image/pipeg","image/tiff" ] %}
+                {% if data.mimeType == 'image/svg+xml' %}
+                    <img src="{{ vich_uploader_asset(data) }}" alt="{{ data.label }}" width="150px" />
+                {% elseif data.mimeType not in ["image/png","image/jpeg","image/pipeg","image/tiff"] %}
                     <a target="_blank" href="{{ vich_uploader_asset(data) }}">{{ data.label }}</a>
                 {% else %}
                     <img src="{{ vich_uploader_asset(data) | imagine_filter('wd_media_admin_type') }}"
