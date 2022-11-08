@@ -3,11 +3,13 @@
 
 namespace WebEtDesign\MediaBundle\Entity;
 
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
+use WebEtDesign\MediaBundle\Listener\MediaListener;
 
 
 /**
@@ -17,6 +19,10 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
  * @Vich\Uploadable()
  * @ORM\EntityListeners({"WebEtDesign\MediaBundle\Listener\MediaListener"})
  */
+#[ORM\Entity]
+#[ORM\Table(name: "wd_media__media")]
+#[Vich\Uploadable]
+#[ORM\EntityListeners([MediaListener::class])]
 class Media
 {
 
@@ -31,6 +37,10 @@ class Media
      * @Groups({"media"})
      *
      */
+    #[ORM\Id]
+    #[ORM\Column(type: Types::INTEGER)]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
+    #[Groups(["media"])]
     protected ?int $id = null;
 
     /**
@@ -39,6 +49,8 @@ class Media
      * @ORM\Column(type="string")
      * @Groups({"media"})
      */
+    #[ORM\Column(type: Types::STRING)]
+    #[Groups(["media"])]
     private string $label = '';
 
     /**
@@ -47,12 +59,15 @@ class Media
      * @ORM\Column(type="string")
      * @Groups({"media"})
      */
+    #[ORM\Column(type: Types::STRING)]
+    #[Groups(["media"])]
     private ?string $category = null;
 
     /**
      * @var string|null
      * @Groups({"media"})
      */
+    #[Groups(["media"])]
     private ?string $categoryLabel = null;
 
     /**
@@ -60,12 +75,15 @@ class Media
      * @var string|null
      * @Groups({"media"})
      */
+    #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
+    #[Groups(["media"])]
     private ?string $fileName = null;
 
     /**
      * @Vich\UploadableField(mapping="wd_media", fileNameProperty="fileName")
      * @var File|null
      */
+    #[Vich\UploadableField(mapping: "wd_media", fileNameProperty: "fileName")]
     private ?File $file = null;
 
 
@@ -74,6 +92,8 @@ class Media
      * @ORM\Column(type="string")
      * @Groups({"media"})
      */
+    #[ORM\Column(type: Types::STRING)]
+    #[Groups(["media"])]
     private ?string $mimeType = null;
 
     /**
@@ -81,6 +101,8 @@ class Media
      * @ORM\Column(type="string")
      * @Groups({"media"})
      */
+    #[ORM\Column(type: Types::STRING)]
+    #[Groups(["media"])]
     private ?string $extension = null;
 
     /**
@@ -89,6 +111,8 @@ class Media
      * @ORM\Column(type="text", nullable=true)
      * @Groups({"media"})
      */
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(["media"])]
     private ?string $cropData = null;
 
     /**
@@ -97,6 +121,8 @@ class Media
      * @ORM\Column(type="string", nullable=true)
      * @Groups({"media"})
      */
+    #[ORM\Column(type: Types::STRING, nullable: true)]
+    #[Groups(["media"])]
     private ?string $description = null;
 
     /**
@@ -105,6 +131,8 @@ class Media
      * @ORM\Column(type="text", nullable=true)
      * @Groups({"media"})
      */
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(["media"])]
     private ?string $permalink = '';
 
     public function __toString()
