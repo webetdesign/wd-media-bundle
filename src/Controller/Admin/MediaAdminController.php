@@ -138,12 +138,17 @@ class MediaAdminController extends CRUDController
         $this->em->persist($media);
         $this->em->flush();
 
-        return $this->json([
-                "uploaded" => 1,
-                "fileName" => $media->getFileName(),
-                "url" => $this->uploaderHelper->asset($media)
-            ]
-        );
+        return $this->renderWithExtraParams($this->admin->getTemplate('upload'), [
+            'action' => 'list',
+            'object' => $media,
+        ]);
+
+//        return $this->json([
+//                "uploaded" => 1,
+//                "fileName" => $media->getFileName(),
+//                "url" => $this->uploaderHelper->asset($media)
+//            ]
+//        );
     }
 
     protected function handleXmlHttpRequestErrorResponse(Request $request, FormInterface $form): ?JsonResponse
