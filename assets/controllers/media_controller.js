@@ -205,11 +205,11 @@ export default class extends Controller {
       this.btnGroupTarget.classList.add('btn-group-vertical')
       if (this.isCropable()) {
         if (this.hasBtnCropTarget) {
-          this.hasBtnCropTarget.classList.remove('d-none')
+          this.btnCropTarget.classList.remove('d-none')
         }
       } else {
         if (this.hasBtnCropTarget) {
-          this.hasBtnCropTarget.classList.add('d-none')
+          this.btnCropTarget.classList.add('d-none')
         }
       }
     }
