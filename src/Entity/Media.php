@@ -141,6 +141,7 @@ class Media
      * @ORM\Column(type="string", nullable=true)
      * @Groups({"media"})
      */
+    #[ORM\Column(type: Types::STRING, nullable: true)]
     protected ?string $alt = null;
 
     public function __toString()
