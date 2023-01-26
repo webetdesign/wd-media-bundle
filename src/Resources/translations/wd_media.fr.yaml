@@ -23,6 +23,7 @@ form.label_alt: Balise alt
 form.label_file: Fichier
 form.label_category_label: Categorie
 form.label_description: Description
+form.label_category: Catégorie
 
 
 filter.label_id: id
