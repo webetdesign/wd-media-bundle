@@ -4,7 +4,7 @@ services:
     class: WebEtDesign\MediaBundle\Admin\MediaAdmin
     arguments: [ ~, WebEtDesign\MediaBundle\Entity\Media, WebEtDesign\MediaBundle\Controller\Admin\MediaAdminController ]
     tags:
-      - { name: sonata.admin, manager_type: orm, group: wd_media.group.title, label: admin.media.title, label_translator_strategy: sonata.admin.label.strategy.underscore, on_top: true, label_catalogue: wd_media, icon: '<i class="fa fa-image"></i>' }
+      - { name: sonata.admin, manager_type: orm, group: wd_media.group.title, label: admin.media.title, label_translator_strategy: sonata.admin.label.strategy.underscore, on_top: true, icon: '<i class="fa fa-image"></i>' }
     public: true
     calls:
       - [ setTranslationDomain, [ 'wd_media' ] ]
