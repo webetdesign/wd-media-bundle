@@ -12,7 +12,9 @@
                     {% if object.mimeType not in ['image/gif',"image/ief","image/png","image/jpeg","image/pipeg","image/svg+xml","image/tiff" ] %}
                         <img src="{{ asset('bundles/wdmedia/img/files/' ~ object.extension ~ '.png') }}" alt="{{ object.label }}" width="90">
                     {% elseif object.mimeType == "image/svg+xml" %}
-                        <embed src="{{  vich_uploader_asset(object) }}" style="width:10%; height:10%;" type="image/svg+xml"/>
+                        <div style="width:90px; height:90px;">
+                        <embed src="{{  vich_uploader_asset(object) }}"  type="image/svg+xml"/>
+                        </div>
                     {% else%}
                         <img src="{{ vich_uploader_asset(object) | imagine_filter('wd_media_admin_list') }}" alt="{{ object.label }}">
                     {% endif %}
@@ -21,7 +23,9 @@
                 {% if object.mimeType not in ['image/gif',"image/ief","image/png","image/jpeg","image/pipeg","image/svg+xml","image/tiff" ] %}
                     <img src="{{ asset('bundles/wdmedia/img/files/' ~ object.extension ~ '.png') }}" alt="{{ object.extension }}" width="90">
                 {% elseif object.mimeType == "image/svg+xml" %}
-                    <embed src="{{  vich_uploader_asset(object)}}" style="width:10%; height:10%;" type="image/svg+xml"/>
+                    <div style="width:90px; height:90px;">
+                        <embed src="{{  vich_uploader_asset(object) }}"  type="image/svg+xml"/>
+                    </div>
                 {% else %}
                     <img src="{{ vich_uploader_asset(object) | imagine_filter('wd_media_admin_list') }}" alt="{{ object.label }}">
                 {% endif %}
