@@ -7,13 +7,13 @@
 
     <div class="col-sm-12 media__inner-row">
         <div>
-            {{ dump(object) }}
             {% if admin.isGranted('EDIT', object) and admin.hasRoute('edit') %}
                 <a href="{{ admin.generateUrl('edit', {'id' : object|sonata_urlsafeid }) }}" style="float: left; margin-right: 6px;">
                     {% if object.mimeType not in ['image/gif',"image/ief","image/png","image/jpeg","image/pipeg","image/svg+xml","image/tiff" ] %}
                         <img src="{{ asset('bundles/wdmedia/img/files/' ~ object.extension ~ '.png') }}" alt="{{ object.label }}" width="90">
                     {% elseif object.mimeType == "image/svg+xml" %}
                         <object data="{{ vich_uploader_asset(object) | imagine_filter('wd_media_admin_list') }}" type="image/svg+xml"></object>
+                        <embed src="{{  vich_uploader_asset(object) }}" type="image/svg+xml" />
                     {% else%}
                         <img src="{{ vich_uploader_asset(object) | imagine_filter('wd_media_admin_list') }}" alt="{{ object.label }}">
                     {% endif %}
@@ -21,6 +21,9 @@
             {% else %}
                 {% if object.mimeType not in ['image/gif',"image/ief","image/png","image/jpeg","image/pipeg","image/svg+xml","image/tiff" ] %}
                     <img src="{{ asset('bundles/wdmedia/img/files/' ~ object.extension ~ '.png') }}" alt="{{ object.extension }}" width="90">
+                {% elseif object.mimeType == "image/svg+xml" %}
+                    <object data="{{ vich_uploader_asset(object) | imagine_filter('wd_media_admin_list') }}" type="image/svg+xml"></object>
+                    <embed src="{{  vich_uploader_asset(object) }}" type="image/svg+xml" />
                 {% else %}
                     <img src="{{ vich_uploader_asset(object) | imagine_filter('wd_media_admin_list') }}" alt="{{ object.label }}">
                 {% endif %}
