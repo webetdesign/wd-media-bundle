@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 
 namespace WebEtDesign\MediaBundle\Form\Type;
@@ -25,7 +26,7 @@ class CategoryType extends AbstractType
     /**
      * @inheritDoc
      */
-    public function getParent()
+    public function getParent(): string
     {
         return ChoiceType::class;
     }
@@ -44,7 +45,7 @@ class CategoryType extends AbstractType
         ]);
     }
 
-    protected function buildChoices()
+    protected function buildChoices(): array
     {
         $categories = $this->parameterBag->get('wd_media.categories');
 
