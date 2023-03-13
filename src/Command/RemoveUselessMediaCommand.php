@@ -1,6 +1,6 @@
 <?php
 
-namespace WebEtDesign\MediaBundle\Command;
+/**namespace WebEtDesign\MediaBundle\Command;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Command\Command;
@@ -16,10 +16,7 @@ class RemoveUselessMediaCommand extends Command
     protected static $defaultDescription = 'Analyse all media in public/upload and remove useless media.';
     private EntityManagerInterface $entitymanager;
 
-    /**
-     * ImplantationRegenerateSlugCommand constructor.
-     * @param string|null $name
-     */
+
     public function __construct(string $name = null, EntityManagerInterface $entityManager)
     {
         parent::__construct($name);
@@ -49,4 +46,4 @@ class RemoveUselessMediaCommand extends Command
 
     }
 
-}
+}**/
