@@ -3,7 +3,7 @@
 namespace WebEtDesign\MediaBundle\Blocks;
 
 use WebEtDesign\CmsBundle\Attribute\AsCmsBlock;
-use WebEtDesign\CmsBundle\CmsBlock\AbstractBlock;
+use WebEtDesign\CmsBundle\CMS\Block\AbstractBlock;
 use WebEtDesign\MediaBundle\Form\Type\WDMediaType;
 
 #[AsCmsBlock(name: self::code)]
