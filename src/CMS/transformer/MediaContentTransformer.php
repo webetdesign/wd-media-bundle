@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace WebEtDesign\MediaBundle\CMS\transformer;
 
 
@@ -18,7 +20,7 @@ class MediaContentTransformer implements DataTransformerInterface
     /**
      * @inheritDoc
      */
-    public function transform($value)
+    public function transform($value): mixed
     {
         if ($value !== null) {
             $value = $this->em->getRepository(Media::class)->find($value);
@@ -30,7 +32,7 @@ class MediaContentTransformer implements DataTransformerInterface
     /**
      * @inheritDoc
      */
-    public function reverseTransform($value)
+    public function reverseTransform($value): mixed
     {
         if ($value instanceof Media) {
             return $value->getId();

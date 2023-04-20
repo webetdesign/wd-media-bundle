@@ -9,7 +9,7 @@
                  alt="{{ object.alt }}"
                  class="{{ settings.class is defined ? settings.class : '' }}"
             {% if settings.lazy is defined and settings.lazy is same as true %}
-                {{ object|wd_media_image_lazy_attr(settings.format, device) }}
+{#                {{ object|wd_media_image_lazy_attr(settings.format, device) }}#}
             {% else %}
                 src="{{ object|wd_media_image_path(settings.format, device, absolute_url) }}"
             {% endif %}

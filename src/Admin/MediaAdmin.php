@@ -28,20 +28,11 @@ use WebEtDesign\MediaBundle\Form\Type\CategoryType;
 
 final class MediaAdmin extends AbstractAdmin
 {
-
-    private ParameterBagInterface  $parameterBag;
-    private EntityManagerInterface $em;
-
     public function __construct(
-        $code,
-        $class,
-        $baseControllerName,
-        ParameterBagInterface $parameterBag,
-        EntityManagerInterface $em
+        private readonly ParameterBagInterface $parameterBag,
+        private readonly EntityManagerInterface $em,
     ) {
-        $this->parameterBag = $parameterBag;
-        parent::__construct($code, $class, $baseControllerName);
-        $this->em = $em;
+        parent::__construct();
     }
 
     protected function configureRoutes(RouteCollectionInterface $collection): void
@@ -139,8 +130,7 @@ final class MediaAdmin extends AbstractAdmin
                             'pattern' => '/^[a-z0-9]+(?:-[a-z0-9]+)*$/'
                         ]),
                         new Callback([
-                            'callback' => function ($value, ExecutionContextInterface $context) use
-                            (
+                            'callback' => function ($value, ExecutionContextInterface $context) use (
                                 $em,
                                 $subject
                             ) {
