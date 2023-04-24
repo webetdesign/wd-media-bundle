@@ -195,9 +195,17 @@
 
                 <ul class="dropdown-menu" role="menu">
                     {% for filter in admin.datagrid.filters if (filter.options['show_filter'] is same as(true) or filter.options['show_filter'] is null) %}
+                        {% set filterDisplayed = filter.isActive() or filter.option('show_filter') is same as (true) %}
                         <li>
                             <a href="#" class="sonata-toggle-filter sonata-ba-action" filter-target="filter-{{ admin.uniqid }}-{{ filter.name }}" filter-container="filter-container-{{ admin.uniqid() }}">
-                                <i class="fa {{ (filter.isActive() or filter.options['show_filter']) ? 'fa-check-square-o' : 'fa-square-o' }}"></i>{{ admin.trans(filter.label, {}, filter.translationDomain) }}
+                                <i class="far {{ filterDisplayed ? 'fa-check-square' : 'fa-square' }}"></i>
+                                {% if filter.label is not same as(false) %}
+                                    {% if filter.translationDomain is same as(false) %}
+                                        {{ filter.label }}
+                                    {% else %}
+                                        {{ filter.label|trans(filter.option('label_translation_parameters', {}), filter.translationDomain ?? admin.translationDomain) }}
+                                    {% endif %}
+                                {% endif %}
                             </a>
                         </li>
                     {% endfor %}
@@ -209,20 +217,35 @@
 
 {% block list_filters %}
     {% if admin.datagrid.filters %}
-        {% form_theme form admin.getTemplate('filter') %}
+        {% form_theme form admin.templateRegistry.template('filter') %}
 
         <div class="col-xs-12 col-md-12 sonata-filters-box" style="display: {{ admin.datagrid.hasDisplayableFilters ? 'block' : 'none' }}" id="filter-container-{{ admin.uniqid() }}">
             <div class="box box-primary" >
                 <div class="box-body">
-                    <form class="sonata-filter-form form-horizontal {{ admin.isChild and 1 == admin.datagrid.filters|length ? 'hide' : '' }}" action="{{ admin.generateUrl('ckeditor_browser') }}" method="GET" role="form">
+                    <form
+                            class="sonata-filter-form form-horizontal {{ admin.isChild and 1 == admin.datagrid.filters|length ? 'hide' : '' }}"
+                            action="{{ admin.generateUrl('ckeditor_browser') }}"
+                            method="GET"
+                            role="form"
+                            data-default-values="{{ admin.defaultFilterParameters|json_encode }}"
+                    >
                         {{ form_errors(form) }}
 
                         <div class="row">
                             <div class="col-sm-9">
+                                {% set withAdvancedFilter = false %}
                                 {% for filter in admin.datagrid.filters %}
-                                    <div class="form-group" id="filter-{{ admin.uniqid }}-{{ filter.name }}" sonata-filter="{{ (filter.options['show_filter'] is same as(true) or filter.options['show_filter'] is null) ? 'true' : 'false' }}" style="display: {% if (filter.isActive() and filter.options['show_filter'] is null) or (filter.options['show_filter'] is same as(true)) %}block{% else %}none{% endif %}">
+                                    {% set filterDisplayed = filter.isActive() or filter.option('show_filter') is same as (true) %}
+                                    {% set filterCanBeDisplayed = filter.option('show_filter') is not same as(false) %}
+                                    <div class="form-group {% block sonata_list_filter_group_class %}{% endblock %}" id="filter-{{ admin.uniqid }}-{{ filter.name }}" sonata-filter="{{ filterCanBeDisplayed ? 'true' : 'false' }}" style="display: {% if filterDisplayed %}block{% else %}none{% endif %}">
                                         {% if filter.label is not same as(false) %}
-                                            <label for="{{ form.children[filter.formName].children['value'].vars.id }}" class="col-sm-3 control-label">{{ admin.trans(filter.label, {}, filter.translationDomain) }}</label>
+                                            <label for="{{ form[filter.formName].children['value'].vars.id }}" class="col-sm-3 control-label">
+                                                {% if filter.translationDomain is same as(false) %}
+                                                    {{ filter.label }}
+                                                {% else %}
+                                                    {{ filter.label|trans(filter.option('label_translation_parameters', {}), filter.translationDomain ?? admin.translationDomain) }}
+                                                {% endif %}
+                                            </label>
                                         {% endif %}
                                         {% set attr = form.children[filter.formName].children['type'].vars.attr|default({}) %}
 
