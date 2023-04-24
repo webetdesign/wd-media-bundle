@@ -135,7 +135,7 @@ class MediaAdminController extends CRUDController
         $this->em->persist($media);
         $this->em->flush();
 
-        return $this->renderWithExtraParams($this->admin->getTemplate('upload'), [
+        return $this->renderWithExtraParams($this->admin->getTemplateRegistry()->getTemplate('upload'), [
             'action' => 'list',
             'object' => $media,
         ]);
