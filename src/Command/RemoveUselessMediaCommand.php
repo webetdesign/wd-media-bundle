@@ -12,8 +12,8 @@ use Symfony\Component\Console\Attribute\AsCommand;
 
 
 #[AsCommand(
-    name: 'legacy:import-media',
-    description: 'import legacy media form exported json',
+    name: 'media:removeUseless',
+    description: 'Analyse all media in public/upload and remove useless media.',
 )]
 class RemoveUselessMediaCommand extends Command
 {
