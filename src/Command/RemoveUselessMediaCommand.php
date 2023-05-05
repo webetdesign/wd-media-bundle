@@ -8,12 +8,16 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Finder\Finder;
 use WebEtDesign\MediaBundle\Entity\Media;
+use Symfony\Component\Console\Attribute\AsCommand;
 
+
+#[AsCommand(
+    name: 'media:removeUseless',
+    description: 'Analyse all media in public/upload and remove useless media.',
+)]
 class RemoveUselessMediaCommand extends Command
 {
 
-    protected static $defaultName = 'media:removeUseless';
-    protected static $defaultDescription = 'Analyse all media in public/upload and remove useless media.';
    /** private EntityManagerInterface $entitymanager;
 
 
