@@ -71,7 +71,7 @@ export default class extends Controller {
   }
 
   edit(e) {
-    this.modal = new BS3Modal(this.id + '_modal', `<h3>Edition of ${this.media.label}</h3>`);
+    this.modal = new BS3Modal(this.id + '_modal', `<h3>Édition de ${this.media.label}</h3>`);
 
     axios.get('/admin/webetdesign/media/media/' + this.mediaId + '/edit', {
       headers: { 'X-Requested-With': 'XMLHttpRequest' },
@@ -87,7 +87,7 @@ export default class extends Controller {
   }
 
   list(e) {
-    this.modal = new BS3Modal(this.id + '_modal', `<h3>List of media in the ${this.config.categories[this.category].label} category</h3>`);
+    this.modal = new BS3Modal(this.id + '_modal', `<h3>Liste des média dans la categories : ${this.config.categories[this.category].label}</h3>`);
 
     const filters = 'filter%5Bcategory%5D%5Btype%5D=3&filter%5Bcategory%5D%5Bvalue%5D=' + this.category;
 
