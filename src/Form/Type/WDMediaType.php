@@ -4,21 +4,38 @@
 namespace WebEtDesign\MediaBundle\Form\Type;
 
 
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use JsonException;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\CallbackTransformer;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use WebEtDesign\MediaBundle\Entity\Media;
+use WebEtDesign\MediaBundle\Repository\MediaRepository;
 
 class WDMediaType extends AbstractType
 {
-    private ParameterBagInterface $parameterBag;
+    public function __construct(
+        private ParameterBagInterface $parameterBag,
+        private MediaRepository $mediaRepo
+    ) {}
 
-    public function __construct(ParameterBagInterface $parameterBag)
+    public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $this->parameterBag = $parameterBag;
+        $builder->addModelTransformer(new CallbackTransformer(
+            function (?Media $media): ?int {
+                return $media?->getId();
+            },
+            function (?int $mediaId): ?Media {
+                if ($mediaId === null) {
+                    return null;
+                }
+                return $this->mediaRepo->find($mediaId);
+            }
+        ));
     }
 
     /**
@@ -26,6 +43,7 @@ class WDMediaType extends AbstractType
      */
     public function buildView(FormView $view, FormInterface $form, array $options)
     {
+        $view->vars['media']           = $this->getMedia($form->getData());
         $view->vars['category']        = $options['category'];
         $view->vars['format']          = $options['format'];
         $view->vars['allow_add']       = $options['allow_add'];
@@ -39,13 +57,29 @@ class WDMediaType extends AbstractType
         ];
     }
 
+    public function getMedia($data): ?Media
+    {
+        if ($data instanceof Media) {
+            return $data;
+        }
+
+        try {
+            $data = json_decode($data, true, 512, JSON_THROW_ON_ERROR);
+
+            if (is_array($data) && isset($data['id'])) {
+                return $this->mediaRepo->find($data['id']);
+            }
+        } catch (JsonException $e) {}
+
+        return null;
+    }
+
     /**
      * @inheritDoc
      */
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'class'        => Media::class,
             'format'       => null,
             'allow_add'    => true,
             'allow_edit'   => true,
@@ -61,7 +95,7 @@ class WDMediaType extends AbstractType
 
     public function getParent(): string
     {
-        return EntityType::class;
+        return IntegerType::class;
     }
 
     /**
@@ -71,6 +105,4 @@ class WDMediaType extends AbstractType
     {
         return 'wd_media';
     }
-
-
 }
