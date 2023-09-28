@@ -6,7 +6,6 @@ services:
       - { name: sonata.admin, model_class: WebEtDesign\MediaBundle\Entity\Media, controller: WebEtDesign\MediaBundle\Controller\Admin\MediaAdminController, manager_type: orm, group: wd_media.group.title, label: admin.media.title, label_translator_strategy: sonata.admin.label.strategy.underscore, on_top: true, icon: '<i class="fa fa-image"></i>' }
     public: true
     calls:
-      - [ setTranslationDomain, [ 'wd_media' ] ]
       - [ setTemplate, [ 'inner_list_row', '@@WDMedia/admin/Media/inner_row_media.html.twig' ] ]
       - [ setTemplate, [ 'browser', '@@WDMedia/admin/Media/ckeditor_browser.html.twig' ] ]
       - [ setTemplate, [ 'upload', '@@WDMedia/admin/Media/ckeditor_upload.html.twig' ] ]

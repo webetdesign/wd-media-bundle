@@ -35,6 +35,12 @@ final class MediaAdmin extends AbstractAdmin
         parent::__construct();
     }
 
+    protected function configure(): void
+    {
+        $this->setTranslationDomain('wd_media');
+    }
+
+
     protected function configureRoutes(RouteCollectionInterface $collection): void
     {
         $collection->add('ckeditor_browser', 'ckeditor_browser', [
