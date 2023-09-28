@@ -1,5 +1,5 @@
 <?php
-
+declare(strict_types=1);
 
 namespace WebEtDesign\MediaBundle\Form\Type;
 
@@ -23,7 +23,7 @@ class WDMediaType extends AbstractType
         private MediaRepository $mediaRepo
     ) {}
 
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder->addModelTransformer(new CallbackTransformer(
             function (?Media $media): ?int {
@@ -41,7 +41,7 @@ class WDMediaType extends AbstractType
     /**
      * @inheritDoc
      */
-    public function buildView(FormView $view, FormInterface $form, array $options)
+    public function buildView(FormView $view, FormInterface $form, array $options): void
     {
         $view->vars['media']           = $this->getMedia($form->getData());
         $view->vars['category']        = $options['category'];
@@ -77,7 +77,7 @@ class WDMediaType extends AbstractType
     /**
      * @inheritDoc
      */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'format'       => null,
