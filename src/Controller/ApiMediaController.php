@@ -136,7 +136,7 @@ class ApiMediaController extends AbstractController
               $format = null
     ): RedirectResponse
     {
-        if ($format && strpos('image', $media->getMimeType()) !== false) {
+        if ($format && strpos($media->getMimeType(), 'image') !== false) {
             $path = $this->mediaService->getImagePath($media, $format);
         } else {
             $path = $this->mediaService->getMediaPath($media);
