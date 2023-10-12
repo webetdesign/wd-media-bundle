@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace WebEtDesign\MediaBundle\Form\Type;
 
-
 use JsonException;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Form\AbstractType;
@@ -20,8 +19,10 @@ class WDMediaType extends AbstractType
 {
     public function __construct(
         private ParameterBagInterface $parameterBag,
-        private MediaRepository $mediaRepo
-    ) {}
+        private MediaRepository       $mediaRepo
+    )
+    {
+    }
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -33,6 +34,7 @@ class WDMediaType extends AbstractType
                 if ($mediaId === null) {
                     return null;
                 }
+
                 return $this->mediaRepo->find($mediaId);
             }
         ));
@@ -59,6 +61,10 @@ class WDMediaType extends AbstractType
 
     public function getMedia($data): ?Media
     {
+        if (null === $data) {
+            return null;
+        }
+
         if ($data instanceof Media) {
             return $data;
         }
@@ -69,7 +75,8 @@ class WDMediaType extends AbstractType
             if (is_array($data) && isset($data['id'])) {
                 return $this->mediaRepo->find($data['id']);
             }
-        } catch (JsonException $e) {}
+        } catch (JsonException $e) {
+        }
 
         return null;
     }
