@@ -1,8 +1,7 @@
 <?php
-
+declare(strict_types=1);
 
 namespace WebEtDesign\MediaBundle\Form\Type;
-
 
 use JsonException;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
@@ -20,10 +19,12 @@ class WDMediaType extends AbstractType
 {
     public function __construct(
         private ParameterBagInterface $parameterBag,
-        private MediaRepository $mediaRepo
-    ) {}
+        private MediaRepository       $mediaRepo
+    )
+    {
+    }
 
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder->addModelTransformer(new CallbackTransformer(
             function (?Media $media): ?int {
@@ -33,6 +34,7 @@ class WDMediaType extends AbstractType
                 if ($mediaId === null) {
                     return null;
                 }
+
                 return $this->mediaRepo->find($mediaId);
             }
         ));
@@ -41,7 +43,7 @@ class WDMediaType extends AbstractType
     /**
      * @inheritDoc
      */
-    public function buildView(FormView $view, FormInterface $form, array $options)
+    public function buildView(FormView $view, FormInterface $form, array $options): void
     {
         $view->vars['media']           = $this->getMedia($form->getData());
         $view->vars['category']        = $options['category'];
@@ -59,6 +61,10 @@ class WDMediaType extends AbstractType
 
     public function getMedia($data): ?Media
     {
+        if (null === $data) {
+            return null;
+        }
+
         if ($data instanceof Media) {
             return $data;
         }
@@ -69,7 +75,8 @@ class WDMediaType extends AbstractType
             if (is_array($data) && isset($data['id'])) {
                 return $this->mediaRepo->find($data['id']);
             }
-        } catch (JsonException $e) {}
+        } catch (JsonException $e) {
+        }
 
         return null;
     }
@@ -77,7 +84,7 @@ class WDMediaType extends AbstractType
     /**
      * @inheritDoc
      */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'format'       => null,
