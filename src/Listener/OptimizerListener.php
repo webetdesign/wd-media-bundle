@@ -3,7 +3,9 @@
 namespace WebEtDesign\MediaBundle\Listener;
 
 use Imagick;
+use Psr\Log\LoggerInterface;
 use Spatie\ImageOptimizer\OptimizerChainFactory;
+use Spatie\ImageOptimizer\Optimizers\Jpegoptim;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Vich\UploaderBundle\Event\Event;
 use WebEtDesign\MediaBundle\Entity\Media;
@@ -16,12 +18,12 @@ class OptimizerListener
      */
     private ParameterBagInterface $parameterBag;
 
-    public function __construct(ParameterBagInterface $parameterBag)
+    public function __construct(ParameterBagInterface $parameterBag, protected LoggerInterface $logger)
     {
         $this->parameterBag = $parameterBag;
     }
 
-    public function onVichUploaderPostUpload(Event $event)
+    public function onVichUploaderPostUpload(Event $event): void
     {
         $object = $event->getObject();
 
@@ -32,7 +34,7 @@ class OptimizerListener
         }
     }
 
-    private function optimize($object, $property)
+    private function optimize($object, $property): void
     {
         $categories = $this->parameterBag->get('wd_media.categories');
         $config     = $categories[$object->getCategory()];
@@ -52,8 +54,20 @@ class OptimizerListener
             $imagick->writeImage($object->$method()->getPathname());
 
             $optimizerChain = OptimizerChainFactory::create(['quality' => $config['pre_upload']['quality']]);
+//            $optimizerChain->useLogger($this->logger);
+
+            foreach ($optimizerChain->getOptimizers() as $optimizer) {
+                if ($optimizer instanceof Jpegoptim) {
+                    $optimizer->setOptions([
+                        '--max=75',
+                        '--stripe-all',
+                        '--keep-exif',
+                        '--all-progressive'
+                    ]);
+                }
+            }
+
             $optimizerChain->optimize($object->$method()->getPathname());
         }
     }
-
 }
