@@ -54,18 +54,24 @@
                                         {# Disable batch and actions #}
                                     {% else %}
                                         {% set sortable = false %}
-                                        {% if field_description.options.sortable is defined and field_description.options.sortable%}
-                                            {% set sortable             = true %}
-                                            {% set sort_parameters      = admin.modelmanager.sortparameters(field_description, admin.datagrid)|merge(ckParameters) %}
-                                            {% set current              = admin.datagrid.values._sort_by == field_description or admin.datagrid.values._sort_by.fieldName == sort_parameters.filter._sort_by %}
-                                            {% set sort_active_class    = current ? 'sonata-ba-list-field-order-active' : '' %}
-                                            {% set sort_by              = current ? admin.datagrid.values._sort_order : field_description.options._sort_order %}
+                                        {% if field_description.options.sortable is defined and field_description.options.sortable %}
+                                            {% set sortable = true %}
+                                            {% set current_sort_by = admin.datagrid.values._sort_by is defined ? admin.datagrid.values._sort_by : '' %}
+                                            {% set current_sort_order = admin.datagrid.values._sort_order is defined ? admin.datagrid.values._sort_order : 'ASC' %}
+                                            {% set new_sort_order = current_sort_order == 'ASC' ? 'DESC' : 'ASC' %}
+                                            {% set sort_parameters = {
+                                                '_sort_by': field_description.name,
+                                                '_sort_order': new_sort_order
+                                            }|merge(ckParameters) %}
+                                            {% set current = current_sort_by == field_description.name %}
+                                            {% set sort_active_class = current ? 'sonata-ba-list-field-order-active' : '' %}
+                                            {% set sort_by = current ? current_sort_order : 'ASC' %}
                                         {% endif %}
 
                                         {% apply spaceless %}
-                                            <th class="sonata-ba-list-field-header-{{ field_description.type}} {% if sortable %} sonata-ba-list-field-header-order-{{ sort_by|lower }} {{ sort_active_class }}{% endif %}">
+                                            <th class="sonata-ba-list-field-header-{{ field_description.type }} {% if sortable %} sonata-ba-list-field-header-order-{{ sort_by|lower }} {{ sort_active_class }}{% endif %}">
                                                 {% if sortable %}<a href="{{ admin.generateUrl('ckeditor_browser', sort_parameters) }}">{% endif %}
-                                                    {{ admin.trans(field_description.label) }}
+                                                    {{ field_description.label|trans({}, 'messages') }}
                                                     {% if sortable %}</a>{% endif %}
                                             </th>
                                         {% endapply %}
@@ -194,20 +200,22 @@
                 </a>
 
                 <ul class="dropdown-menu" role="menu">
-                    {% for filter in admin.datagrid.filters if (filter.options['show_filter'] is same as(true) or filter.options['show_filter'] is null) %}
-                        {% set filterDisplayed = filter.isActive() or filter.option('show_filter') is same as (true) %}
-                        <li>
-                            <a href="#" class="sonata-toggle-filter sonata-ba-action" filter-target="filter-{{ admin.uniqid }}-{{ filter.name }}" filter-container="filter-container-{{ admin.uniqid() }}">
-                                <i class="far {{ filterDisplayed ? 'fa-check-square' : 'fa-square' }}"></i>
-                                {% if filter.label is not same as(false) %}
-                                    {% if filter.translationDomain is same as(false) %}
-                                        {{ filter.label }}
-                                    {% else %}
-                                        {{ filter.label|trans(filter.option('label_translation_parameters', {}), filter.translationDomain ?? admin.translationDomain) }}
+                    {% for filter in admin.datagrid.filters %}
+                        {% if filter.options['show_filter'] is same as(true) or filter.options['show_filter'] is null %}
+                            {% set filterDisplayed = filter.isActive() or filter.option('show_filter') is same as (true) %}
+                            <li>
+                                <a href="#" class="sonata-toggle-filter sonata-ba-action" filter-target="filter-{{ admin.uniqid }}-{{ filter.name }}" filter-container="filter-container-{{ admin.uniqid() }}">
+                                    <i class="far {{ filterDisplayed ? 'fa-check-square' : 'fa-square' }}"></i>
+                                    {% if filter.label is not same as(false) %}
+                                        {% if filter.translationDomain is same as(false) %}
+                                            {{ filter.label }}
+                                        {% else %}
+                                            {{ filter.label|trans(filter.option('label_translation_parameters', {}), filter.translationDomain ?? admin.translationDomain) }}
+                                        {% endif %}
                                     {% endif %}
-                                {% endif %}
-                            </a>
-                        </li>
+                                </a>
+                            </li>
+                        {% endif %}
                     {% endfor %}
                 </ul>
             </li>
