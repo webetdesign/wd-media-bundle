@@ -1,8 +1,6 @@
 <?php
 
-
 namespace WebEtDesign\MediaBundle\Controller\Admin;
-
 
 use Doctrine\ORM\EntityManagerInterface;
 use Liip\ImagineBundle\Imagine\Cache\CacheManager;
@@ -25,17 +23,17 @@ class MediaAdminController extends CRUDController
     private Environment            $twig;
 
     public function __construct(
-        CacheManager $cacheManager,
-        UploaderHelper $uploaderHelper,
+        CacheManager           $cacheManager,
+        UploaderHelper         $uploaderHelper,
         EntityManagerInterface $entityManager,
-        Environment $twig,
-    ) {
+        Environment            $twig,
+    )
+    {
         $this->cacheManager   = $cacheManager;
         $this->uploaderHelper = $uploaderHelper;
         $this->em             = $entityManager;
         $this->twig           = $twig;
     }
-
 
     /**
      * @inheritDoc
@@ -45,9 +43,9 @@ class MediaAdminController extends CRUDController
         if ($request->query->has('category')) {
             $object->setCategory($request->query->get('category'));
         }
+
         return null;
     }
-
 
     /**
      * @phpstan-param $object
@@ -57,8 +55,9 @@ class MediaAdminController extends CRUDController
      */
     protected function handleXmlHttpRequestSuccessResponse(
         Request $request,
-        object $object
-    ): JsonResponse {
+        object  $object
+    ): JsonResponse
+    {
         if (empty(array_intersect(['application/json', '*/*'],
             $request->getAcceptableContentTypes()))) {
             @trigger_error(sprintf(
@@ -100,7 +99,6 @@ class MediaAdminController extends CRUDController
      */
     public function ckeditorBrowserAction(Request $request): Response
     {
-
         $this->admin->checkAccess('list');
 
         $datagrid = $this->admin->getDatagrid();
@@ -111,18 +109,24 @@ class MediaAdminController extends CRUDController
 
         $formView = $datagrid->getForm()->createView();
 
-        $this->twig->getRuntime(FormRenderer::class)->setTheme($formView, $this->admin->getFilterTheme());
+        // set the theme for the current Admin Form
+        $this->setFormTheme($formView, $this->admin->getFilterTheme());
 
-        return $this->renderWithExtraParams($this->admin->getTemplateRegistry()->getTemplate('browser'), [
-            'action'   => 'browser',
-            'form'     => $formView,
-            'datagrid' => $datagrid,
+        $templateRegistry = $this->admin->getTemplateRegistry();
+        $template = $templateRegistry->getTemplate('browser');
+        $templateRegistry->setTemplate('inner_list_row', '@WDMedia/admin/Media/inner_row_media_browser.html.twig');
+
+        return $this->renderWithExtraParams($template, [
+            'action'         => 'list',
+            'form'           => $formView,
+            'datagrid'       => $datagrid,
+            'csrf_token'     => $this->getCsrfToken('sonata.batch'),
+            'export_formats' => $exportFormats ?? $this->admin->getExportFormats(),
         ]);
     }
 
     public function ckeditorUploadAction(Request $request): Response
     {
-
         $this->admin->checkAccess('create');
 
         $file     = $request->files->get('upload');

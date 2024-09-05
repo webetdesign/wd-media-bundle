@@ -1,0 +1,64 @@
+{#{% if admin.list.has(constant('Sonata\\AdminBundle\\Datagrid\\ListMapper::NAME_BATCH')) and not app.request.isXmlHttpRequest %}#}
+{#    {{ object|render_list_element(admin.list[constant('Sonata\\AdminBundle\\Datagrid\\ListMapper::NAME_BATCH')]) }}#}
+{#{% endif %}#}
+
+<td class="sonata-ba-list-field sonata-ba-list-field-inline-fields"
+    objectId="{{ admin.id(object) }}">
+
+    <div class="col-sm-12 media__inner-row">
+        <div>
+            {% if admin.isGranted('EDIT', object) and admin.hasRoute('edit') %}
+                <a href="{{ admin.generateUrl('edit', {'id' : object|sonata_urlsafeid }) }}" class="select" style="float: left; margin-right: 6px;">
+                    {% if object.mimeType not in ['image/gif',"image/ief","image/png","image/jpeg","image/pipeg","image/svg+xml","image/tiff" ] %}
+                        <img src="{{ asset('bundles/wdmedia/img/files/' ~ object.extension ~ '.png') }}" alt="{{ object.label }}" width="90">
+                    {% elseif object.mimeType == "image/svg+xml" %}
+                        <div style="width:90px; height:90px;">
+                        <embed src="{{  vich_uploader_asset(object) }}" style="width:90px; height:90px;" type="image/svg+xml"/>
+                        </div>
+                    {% else%}
+                        <img src="{{ vich_uploader_asset(object) | imagine_filter('wd_media_admin_list') }}" alt="{{ object.label }}">
+                    {% endif %}
+                </a>
+            {% else %}
+                {% if object.mimeType not in ['image/gif',"image/ief","image/png","image/jpeg","image/pipeg","image/svg+xml","image/tiff" ] %}
+                    <img src="{{ asset('bundles/wdmedia/img/files/' ~ object.extension ~ '.png') }}" alt="{{ object.extension }}" width="90">
+                {% elseif object.mimeType == "image/svg+xml" %}
+                    <div style="width:90px; height:90px;">
+                        <embed src="{{  vich_uploader_asset(object) }}" style="width:90px; height:90px;" type="image/svg+xml"/>
+                    </div>
+                {% else %}
+                    <img src="{{ vich_uploader_asset(object) | imagine_filter('wd_media_admin_list') }}" alt="{{ object.label }}">
+                {% endif %}
+            {% endif %}
+        </div>
+        <div class="info">
+            {% if admin.isGranted('EDIT', object) and admin.hasRoute('edit') %}
+                <a href="{{ admin.generateUrl('edit', {'id' : object|sonata_urlsafeid }) }}" class="select"><strong>{{ object.label }}</strong></a>
+            {% else %}
+                <strong>{{ object.label }}</strong>
+            {% endif %}
+            <p>
+                Catégorie : {{ object.category }}<br>
+                MimeType : {{ object.mimeType }}
+            </p>
+        </div>
+        {% if app.request.isXmlHttpRequest %}
+            <div class="select-btn">
+                <a class="btn btn-success">Sélectionner</a>
+            </div>
+        {% endif %}
+    </div>
+
+</td>
+
+<td class="sonata-ba-list-field sonata-ba-list-field-text" objectid="{{ admin.id(object) }}">
+    <a href="{{ wd_media_link(object) }}" class="disable-catch" target="_blank">Consulter</a>
+</td>
+<td class="sonata-ba-list-field sonata-ba-list-field-text" objectid="{{ admin.id(object) }}">{{ object.createdAt|date('d/m/Y H:i') }}</td>
+<td colspan="2"></td>
+
+{#{% if admin.list.has(constant('Sonata\\AdminBundle\\Datagrid\\ListMapper::NAME_ACTIONS')) and not app.request.isXmlHttpRequest %}#}
+{#    {{ object|render_list_element(admin.list[constant('Sonata\\AdminBundle\\Datagrid\\ListMapper::NAME_ACTIONS')]) }}#}
+{#{% endif %}#}
+
+
