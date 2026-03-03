@@ -27,120 +27,51 @@ class Media
 {
 
     use TimestampableEntity;
-
-    /**
-     * @var int|null $id
-     *
-     * @ORM\Id
-     * @ORM\Column(type="integer")
-     * @ORM\GeneratedValue(strategy="AUTO")
-     * @Groups({"media"})
-     *
-     */
+    
     #[ORM\Id]
     #[ORM\Column(type: Types::INTEGER)]
     #[ORM\GeneratedValue(strategy: 'AUTO')]
     #[Groups(["media"])]
     protected ?int $id = null;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(type="string")
-     * @Groups({"media"})
-     */
+    
     #[ORM\Column(type: Types::STRING)]
     #[Groups(["media"])]
     private string $label = '';
-
-    /**
-     * @var string|null
-     *
-     * @ORM\Column(type="string")
-     * @Groups({"media"})
-     */
+    
     #[ORM\Column(type: Types::STRING)]
     #[Groups(["media"])]
     private ?string $category = null;
-
-    /**
-     * @var string|null
-     * @Groups({"media"})
-     */
+    
     #[Groups(["media"])]
     private ?string $categoryLabel = null;
-
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     * @var string|null
-     * @Groups({"media"})
-     */
+    
     #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
     #[Groups(["media"])]
     private ?string $fileName = null;
-
-    /**
-     * @Vich\UploadableField(mapping="wd_media", fileNameProperty="fileName")
-     * @var File|null
-     */
+    
     #[Vich\UploadableField(mapping: "wd_media", fileNameProperty: "fileName")]
     private ?File $file = null;
-
-
-    /**
-     * @var string|null
-     * @ORM\Column(type="string")
-     * @Groups({"media"})
-     */
+    
     #[ORM\Column(type: Types::STRING)]
     #[Groups(["media"])]
     private ?string $mimeType = null;
 
-    /**
-     * @var string|null
-     * @ORM\Column(type="string")
-     * @Groups({"media"})
-     */
     #[ORM\Column(type: Types::STRING)]
     #[Groups(["media"])]
     private ?string $extension = null;
 
-    /**
-     * @var string|null
-     *
-     * @ORM\Column(type="text", nullable=true)
-     * @Groups({"media"})
-     */
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     #[Groups(["media"])]
     private ?string $cropData = null;
-
-    /**
-     * @var string|null
-     *
-     * @ORM\Column(type="string", nullable=true)
-     * @Groups({"media"})
-     */
+    
     #[ORM\Column(type: Types::STRING, nullable: true)]
     #[Groups(["media"])]
     private ?string $description = null;
-
-    /**
-     * @var null|string
-     *
-     * @ORM\Column(type="text", nullable=true)
-     * @Groups({"media"})
-     */
+    
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     #[Groups(["media"])]
     private ?string $permalink = '';
 
-    /**
-     * @var null|string
-     *
-     * @ORM\Column(type="string", nullable=true)
-     * @Groups({"media"})
-     */
     #[ORM\Column(type: Types::STRING, nullable: true)]
     protected ?string $alt = null;
 
