@@ -4,9 +4,8 @@ namespace WebEtDesign\MediaBundle\DependencyInjection;
 
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Extension\Extension;
 use Symfony\Component\DependencyInjection\Loader;
-use Symfony\Component\HttpKernel\DependencyInjection\Extension;
-use WebEtDesign\RgpdBundle\Annotations\Exportable;
 
 /**
  * This is the class that loads and manages your bundle configuration.
@@ -31,7 +30,6 @@ class WDMediaExtension extends Extension
         $loader->load('services.yaml');
         $loader->load('admins.yaml');
         $loader->load('doctrine.yaml');
-        $loader->load('cms_content.yaml');
         $loader->load('media_extension.yaml');
 
         $bundles = $container->getParameter('kernel.bundles');
