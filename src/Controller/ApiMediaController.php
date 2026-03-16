@@ -7,12 +7,12 @@ namespace WebEtDesign\MediaBundle\Controller;
 use Doctrine\ORM\EntityManagerInterface;
 use Liip\ImagineBundle\Exception\Config\Filter\NotFoundException;
 use Liip\ImagineBundle\Imagine\Cache\CacheManager;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use Doctrine\Bundle\DoctrineBundle\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Serializer\SerializerInterface;
 use Vich\UploaderBundle\Templating\Helper\UploaderHelper;
 use WebEtDesign\MediaBundle\Entity\Media;
@@ -41,9 +41,8 @@ class ApiMediaController extends AbstractController
     /**
      * @param Media $media
      *
-     * @Route("/api/wdmedia/{id}", name="")
-     * @return JsonResponse
      */
+    #[Route('/api/wdmedia/{id}', name: 'api_wdmedia_get')]
     public function getMedia(Media $media, SerializerInterface $serializer)
     {
         if ($media->getMimeType() == 'image/svg+xml') {
@@ -71,10 +70,8 @@ class ApiMediaController extends AbstractController
      * @param Request $request
      * @param Media $media
      *
-     * @Route("/api/wdmedia/setcrop/{id}", name="api_wdmedia_setcrop", methods={"POST"})
-     *
-     * @return JsonResponse
      */
+    #[Route('/api/wdmedia/setcrop/{id}', name: 'api_wdmedia_setcrop', methods: ['POST'])]
     public function patch(Request $request, Media $media)
     {
         if (!$media) {
@@ -99,11 +96,9 @@ class ApiMediaController extends AbstractController
      * @param null $format
      * @return RedirectResponse
      * @throws NotFoundException
-     * @Route("/api/wdmedia/render/{id}", name="api_render_media", methods={"GET"})
-     * @Route("/api/wdmedia/render/{id}/{format}", name="api_render_image", methods={"GET"})
-     *
-     * @ParamConverter("media", class="WebEtDesign\MediaBundle\Entity\Media", options={"mapping": {"id": "id"}})
      */
+    #[Route('/api/wdmedia/render/{id}', name: 'api_render_media', methods: ['GET'])]
+    #[Route('/api/wdmedia/render/{id}/{format}', name: 'api_render_image', methods: ['GET'])]
     public function renderMedia(
         Media $media,
         $format = null
@@ -127,10 +122,9 @@ class ApiMediaController extends AbstractController
      * @param null $format
      * @return RedirectResponse
      * @throws NotFoundException
-     * @Route("/api/wdmedia/download/{permalink}/{format}", name="api_dmedia_download_slug")
-     *
-     * @ParamConverter("media", class="WebEtDesign\MediaBundle\Entity\Media", options={"mapping": {"permalink": "permalink"}})
      */
+    #[Route('/api/wdmedia/download/{permalink}/{format}', name: 'api_dmedia_download_slug')]
+    #[MapEntity(mapping: ['permalink' => 'permalink'])]
     public function renderMediaPermalink(
         Media $media,
               $format = null
