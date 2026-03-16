@@ -1,6 +1,5 @@
 {
   "name": "webetdesign/wd-media-bundle",
-  "version": "7.x-dev",
   "type": "symfony-bundle",
   "description": "",
   "keywords": [],
