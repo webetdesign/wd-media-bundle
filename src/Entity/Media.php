@@ -7,18 +7,11 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 use Symfony\Component\HttpFoundation\File\File;
-use Symfony\Component\Serializer\Annotation\Groups;
-use Vich\UploaderBundle\Mapping\Annotation as Vich;
+use Symfony\Component\Serializer\Attribute\Groups;
+use Vich\UploaderBundle\Mapping\Attribute as Vich;
 use WebEtDesign\MediaBundle\Listener\MediaListener;
 
 
-/**
- * @ORM\Entity
- * @ORM\Table(name="wd_media__media")
- *
- * @Vich\Uploadable()
- * @ORM\EntityListeners({"WebEtDesign\MediaBundle\Listener\MediaListener"})
- */
 #[ORM\Entity]
 #[ORM\Table(name: "wd_media__media")]
 #[Vich\Uploadable]
@@ -27,31 +20,31 @@ class Media
 {
 
     use TimestampableEntity;
-    
+
     #[ORM\Id]
     #[ORM\Column(type: Types::INTEGER)]
     #[ORM\GeneratedValue(strategy: 'AUTO')]
     #[Groups(["media"])]
     protected ?int $id = null;
-    
+
     #[ORM\Column(type: Types::STRING)]
     #[Groups(["media"])]
     private string $label = '';
-    
+
     #[ORM\Column(type: Types::STRING)]
     #[Groups(["media"])]
     private ?string $category = null;
-    
+
     #[Groups(["media"])]
     private ?string $categoryLabel = null;
-    
+
     #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
     #[Groups(["media"])]
     private ?string $fileName = null;
-    
+
     #[Vich\UploadableField(mapping: "wd_media", fileNameProperty: "fileName")]
     private ?File $file = null;
-    
+
     #[ORM\Column(type: Types::STRING)]
     #[Groups(["media"])]
     private ?string $mimeType = null;
@@ -63,11 +56,11 @@ class Media
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     #[Groups(["media"])]
     private ?string $cropData = null;
-    
+
     #[ORM\Column(type: Types::STRING, nullable: true)]
     #[Groups(["media"])]
     private ?string $description = null;
-    
+
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     #[Groups(["media"])]
     private ?string $permalink = '';
