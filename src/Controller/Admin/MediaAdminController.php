@@ -105,7 +105,7 @@ class MediaAdminController extends CRUDController
 
         $datagrid = $this->admin->getDatagrid();
 
-        $category = $request->get('category');
+        $category = $request->query->get('category');
 
         $datagrid->setValue('category', null, $category);
 
@@ -126,7 +126,7 @@ class MediaAdminController extends CRUDController
         $this->admin->checkAccess('create');
 
         $file     = $request->files->get('upload');
-        $category = $request->get('category');
+        $category = $request->query->get('category');
 
         $media = new Media();
 

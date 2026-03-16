@@ -30,7 +30,6 @@ class WDMediaExtension extends Extension
         $loader->load('services.yaml');
         $loader->load('admins.yaml');
         $loader->load('doctrine.yaml');
-        $loader->load('cms_content.yaml');
         $loader->load('media_extension.yaml');
 
         $bundles = $container->getParameter('kernel.bundles');

@@ -1,6 +1,0 @@
-services:
-  WebEtDesign\MediaBundle\CMS\MediaContent:
-    public: true
-    autowire: true
-    autoconfigure: true
-
