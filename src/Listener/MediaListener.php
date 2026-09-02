@@ -4,7 +4,7 @@
 namespace WebEtDesign\MediaBundle\Listener;
 
 
-use Doctrine\ORM\Event\LifecycleEventArgs;
+use Doctrine\Persistence\Event\LifecycleEventArgs;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use WebEtDesign\MediaBundle\Entity\Media;
