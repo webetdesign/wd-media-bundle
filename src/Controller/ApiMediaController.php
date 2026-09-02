@@ -7,7 +7,7 @@ namespace WebEtDesign\MediaBundle\Controller;
 use Doctrine\ORM\EntityManagerInterface;
 use Liip\ImagineBundle\Exception\Config\Filter\NotFoundException;
 use Liip\ImagineBundle\Imagine\Cache\CacheManager;
-use Doctrine\Bundle\DoctrineBundle\Attribute\MapEntity;
+use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
