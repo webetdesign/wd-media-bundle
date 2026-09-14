@@ -7,7 +7,7 @@ namespace WebEtDesign\MediaBundle\Controller;
 use Doctrine\ORM\EntityManagerInterface;
 use Liip\ImagineBundle\Exception\Config\Filter\NotFoundException;
 use Liip\ImagineBundle\Imagine\Cache\CacheManager;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -101,11 +101,9 @@ class ApiMediaController extends AbstractController
      * @throws NotFoundException
      * @Route("/api/wdmedia/render/{id}", name="api_render_media", methods={"GET"})
      * @Route("/api/wdmedia/render/{id}/{format}", name="api_render_image", methods={"GET"})
-     *
-     * @ParamConverter("media", class="WebEtDesign\MediaBundle\Entity\Media", options={"mapping": {"id": "id"}})
      */
     public function renderMedia(
-        Media $media,
+        #[MapEntity(mapping: ['id' => 'id'])] Media $media,
         $format = null
     ): RedirectResponse
     {
@@ -128,11 +126,9 @@ class ApiMediaController extends AbstractController
      * @return RedirectResponse
      * @throws NotFoundException
      * @Route("/api/wdmedia/download/{permalink}/{format}", name="api_dmedia_download_slug")
-     *
-     * @ParamConverter("media", class="WebEtDesign\MediaBundle\Entity\Media", options={"mapping": {"permalink": "permalink"}})
      */
     public function renderMediaPermalink(
-        Media $media,
+        #[MapEntity(mapping: ['permalink' => 'permalink'])] Media $media,
               $format = null
     ): RedirectResponse
     {
