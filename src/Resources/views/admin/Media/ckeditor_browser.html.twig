@@ -194,7 +194,7 @@
                 </a>
 
                 <ul class="dropdown-menu" role="menu">
-                    {% for filter in admin.datagrid.filters if (filter.options['show_filter'] is same as(true) or filter.options['show_filter'] is null) %}
+                    {% for filter in admin.datagrid.filters|filter(filter => filter.options['show_filter'] is same as(true) or filter.options['show_filter'] is null) %}
                         {% set filterDisplayed = filter.isActive() or filter.option('show_filter') is same as (true) %}
                         <li>
                             <a href="#" class="sonata-toggle-filter sonata-ba-action" filter-target="filter-{{ admin.uniqid }}-{{ filter.name }}" filter-container="filter-container-{{ admin.uniqid() }}">
