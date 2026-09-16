@@ -13,7 +13,7 @@ use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use WebEtDesign\MediaBundle\Entity\Media;
-use WebEtDesign\MediaBundle\Form\ChoiceList\LazyEntityChoiceLoader;
+use WebEtDesign\MediaBundle\Form\ChoiceList\LazyChoiceLoader;
 
 class WDMediaType extends AbstractType
 {
@@ -65,7 +65,7 @@ class WDMediaType extends AbstractType
         // médiathèque. Sans cela, EntityType hydrate toute la table pour rien.
         $resolver->setDefault('choice_loader', function (Options $options, $previous) {
             return $previous instanceof ChoiceLoaderInterface
-                ? new LazyEntityChoiceLoader($previous)
+                ? new LazyChoiceLoader($previous)
                 : $previous;
         });
     }

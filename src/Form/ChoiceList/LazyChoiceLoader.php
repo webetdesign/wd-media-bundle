@@ -20,7 +20,7 @@ use Symfony\Component\Form\ChoiceList\Loader\ChoiceLoaderInterface;
  * résout par identifiant : la transformation et la validation restent donc
  * celles d'un EntityType ordinaire.
  */
-class LazyEntityChoiceLoader implements ChoiceLoaderInterface
+class LazyChoiceLoader implements ChoiceLoaderInterface
 {
     private ChoiceLoaderInterface $decorated;
 
