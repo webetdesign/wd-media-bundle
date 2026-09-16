@@ -4,43 +4,24 @@
 namespace WebEtDesign\MediaBundle\Form\Type;
 
 
-use JsonException;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\CallbackTransformer;
-use Symfony\Component\Form\Extension\Core\Type\IntegerType;
-use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\ChoiceList\Loader\ChoiceLoaderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
+use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use WebEtDesign\MediaBundle\Entity\Media;
-use WebEtDesign\MediaBundle\Repository\MediaRepository;
+use WebEtDesign\MediaBundle\Form\ChoiceList\LazyEntityChoiceLoader;
 
 class WDMediaType extends AbstractType
 {
     private ParameterBagInterface $parameterBag;
-    private MediaRepository       $mediaRepo;
 
-    public function __construct(ParameterBagInterface $parameterBag, MediaRepository $mediaRepo)
+    public function __construct(ParameterBagInterface $parameterBag)
     {
         $this->parameterBag = $parameterBag;
-        $this->mediaRepo    = $mediaRepo;
-    }
-
-    public function buildForm(FormBuilderInterface $builder, array $options)
-    {
-        $builder->addModelTransformer(new CallbackTransformer(
-            function ($media): ?int {
-                return $media instanceof Media ? $media->getId() : null;
-            },
-            function ($mediaId): ?Media {
-                if ($mediaId === null || $mediaId === '') {
-                    return null;
-                }
-
-                return $this->mediaRepo->find($mediaId);
-            }
-        ));
     }
 
     /**
@@ -48,7 +29,6 @@ class WDMediaType extends AbstractType
      */
     public function buildView(FormView $view, FormInterface $form, array $options)
     {
-        $view->vars['media']           = $this->getMedia($form->getData());
         $view->vars['category']        = $options['category'];
         $view->vars['format']          = $options['format'];
         $view->vars['allow_add']       = $options['allow_add'];
@@ -62,34 +42,13 @@ class WDMediaType extends AbstractType
         ];
     }
 
-    public function getMedia($data): ?Media
-    {
-        if ($data instanceof Media) {
-            return $data;
-        }
-
-        if (is_int($data) || (is_string($data) && ctype_digit($data))) {
-            return $this->mediaRepo->find((int) $data);
-        }
-
-        try {
-            $data = json_decode($data, true, 512, JSON_THROW_ON_ERROR);
-
-            if (is_array($data) && isset($data['id'])) {
-                return $this->mediaRepo->find($data['id']);
-            }
-        } catch (JsonException $e) {
-        }
-
-        return null;
-    }
-
     /**
      * @inheritDoc
      */
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
+            'class'        => Media::class,
             'format'       => null,
             'allow_add'    => true,
             'allow_edit'   => true,
@@ -101,11 +60,19 @@ class WDMediaType extends AbstractType
         $resolver->setRequired([
             'category',
         ]);
+
+        // Le gabarit ne rend pas de liste d'options : le média se choisit par la
+        // médiathèque. Sans cela, EntityType hydrate toute la table pour rien.
+        $resolver->setDefault('choice_loader', function (Options $options, $previous) {
+            return $previous instanceof ChoiceLoaderInterface
+                ? new LazyEntityChoiceLoader($previous)
+                : $previous;
+        });
     }
 
     public function getParent(): string
     {
-        return IntegerType::class;
+        return EntityType::class;
     }
 
     /**
