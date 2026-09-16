@@ -1,4 +1,6 @@
 {% block wd_media_widget %}
+    {% set data = form.vars.media %}
+
     <div data-controller="media"
          data-id="{{ form.vars.id }}"
          data-category="{{ form.vars.category }}"
