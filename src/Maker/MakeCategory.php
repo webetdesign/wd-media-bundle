@@ -37,7 +37,7 @@ class MakeCategory extends AbstractMaker
         return 'Add new media category in configuration file';
     }
 
-    public function configureCommand(Command $command, InputConfiguration $inputConfig)
+    public function configureCommand(Command $command, InputConfiguration $inputConfig): void
     {
         $command
             ->addArgument('code', InputArgument::OPTIONAL,
@@ -47,11 +47,11 @@ class MakeCategory extends AbstractMaker
             ->addOption('forceCode', null, InputOption::VALUE_NONE);
     }
 
-    public function configureDependencies(DependencyBuilder $dependencies)
+    public function configureDependencies(DependencyBuilder $dependencies): void
     {
     }
 
-    public function generate(InputInterface $input, ConsoleStyle $io, Generator $generator)
+    public function generate(InputInterface $input, ConsoleStyle $io, Generator $generator): void
     {
         $this->io          = $io;
         $this->devicesCode = array_keys($this->parameterBag->get('wd_media.responsive'));
