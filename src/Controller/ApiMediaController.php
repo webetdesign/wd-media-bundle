@@ -12,7 +12,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Serializer\SerializerInterface;
 use Vich\UploaderBundle\Templating\Helper\UploaderHelper;
 use WebEtDesign\MediaBundle\Entity\Media;
@@ -41,9 +41,9 @@ class ApiMediaController extends AbstractController
     /**
      * @param Media $media
      *
-     * @Route("/api/wdmedia/{id}", name="")
      * @return JsonResponse
      */
+    #[Route('/api/wdmedia/{id}', name: '')]
     public function getMedia(Media $media, SerializerInterface $serializer)
     {
         if ($media->getMimeType() == 'image/svg+xml') {
@@ -71,10 +71,9 @@ class ApiMediaController extends AbstractController
      * @param Request $request
      * @param Media $media
      *
-     * @Route("/api/wdmedia/setcrop/{id}", name="api_wdmedia_setcrop", methods={"POST"})
-     *
      * @return JsonResponse
      */
+    #[Route('/api/wdmedia/setcrop/{id}', name: 'api_wdmedia_setcrop', methods: ['POST'])]
     public function patch(Request $request, Media $media)
     {
         if (!$media) {
