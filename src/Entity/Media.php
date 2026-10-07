@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Serializer\Attribute\Groups;
-use Vich\UploaderBundle\Mapping\Annotation as Vich;
+use Vich\UploaderBundle\Mapping\Attribute as Vich;
 use WebEtDesign\MediaBundle\Listener\MediaListener;
 
 
@@ -16,7 +16,7 @@ use WebEtDesign\MediaBundle\Listener\MediaListener;
  * @ORM\Entity
  * @ORM\Table(name="wd_media__media")
  *
- * @Vich\Uploadable()
+ * @\Vich\UploaderBundle\Mapping\Annotation\Uploadable()
  * @ORM\EntityListeners({"WebEtDesign\MediaBundle\Listener\MediaListener"})
  */
 #[ORM\Entity]
@@ -80,7 +80,7 @@ class Media
     private ?string $fileName = null;
 
     /**
-     * @Vich\UploadableField(mapping="wd_media", fileNameProperty="fileName")
+     * @\Vich\UploaderBundle\Mapping\Annotation\UploadableField(mapping="wd_media", fileNameProperty="fileName")
      * @var File|null
      */
     #[Vich\UploadableField(mapping: "wd_media", fileNameProperty: "fileName")]
