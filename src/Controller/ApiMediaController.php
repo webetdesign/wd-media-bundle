@@ -12,6 +12,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Serializer\SerializerInterface;
 use Vich\UploaderBundle\Templating\Helper\UploaderHelper;
@@ -98,9 +99,9 @@ class ApiMediaController extends AbstractController
      * @param null $format
      * @return RedirectResponse
      * @throws NotFoundException
-     * @Route("/api/wdmedia/render/{id}", name="api_render_media", methods={"GET"})
-     * @Route("/api/wdmedia/render/{id}/{format}", name="api_render_image", methods={"GET"})
      */
+    #[Route('/api/wdmedia/render/{id}', name: 'api_render_media', methods: ['GET'])]
+    #[Route('/api/wdmedia/render/{id}/{format}', name: 'api_render_image', methods: ['GET'])]
     public function renderMedia(
         #[MapEntity(mapping: ['id' => 'id'])] Media $media,
         $format = null
@@ -124,8 +125,8 @@ class ApiMediaController extends AbstractController
      * @param null $format
      * @return RedirectResponse
      * @throws NotFoundException
-     * @Route("/api/wdmedia/download/{permalink}/{format}", name="api_dmedia_download_slug")
      */
+    #[Route('/api/wdmedia/download/{permalink}/{format}', name: 'api_dmedia_download_slug')]
     public function renderMediaPermalink(
         #[MapEntity(mapping: ['permalink' => 'permalink'])] Media $media,
               $format = null
