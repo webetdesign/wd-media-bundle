@@ -4,7 +4,8 @@
 namespace WebEtDesign\MediaBundle\Listener;
 
 
-use Doctrine\ORM\Event\LifecycleEventArgs;
+use Doctrine\ORM\Event\PrePersistEventArgs;
+use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use WebEtDesign\MediaBundle\Entity\Media;
@@ -32,14 +33,14 @@ class MediaListener
         }
     }
 
-    public function prePersist(Media $entity, LifecycleEventArgs $evt)
+    public function prePersist(Media $entity, PrePersistEventArgs $evt)
     {
         $this->updateLabel($entity);
         $this->updateMimeType($entity);
         $this->updateExtension($entity);
     }
 
-    public function preUpdate(Media $entity, LifecycleEventArgs $evt)
+    public function preUpdate(Media $entity, PreUpdateEventArgs $evt)
     {
         $this->updateLabel($entity);
         $this->updateMimeType($entity);
